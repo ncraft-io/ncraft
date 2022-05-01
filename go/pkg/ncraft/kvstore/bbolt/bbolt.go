@@ -6,7 +6,7 @@ import (
     bolt "go.etcd.io/bbolt"
 
     "context"
-    "github.com/ncraft-io/ncraft-go/pkg/kvstore"
+    "github.com/ncraft-io/ncraft/go/pkg/ncraft/kvstore"
 )
 
 // Store is a KvStore implementation for bbolt (formerly known as Bolt / Bolt DB).

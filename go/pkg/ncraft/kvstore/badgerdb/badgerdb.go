@@ -4,7 +4,7 @@ import (
     "context"
     "errors"
     "github.com/dgraph-io/badger"
-    "github.com/ncraft-io/ncraft-go/pkg/kvstore"
+    "github.com/ncraft-io/ncraft/go/pkg/ncraft/kvstore"
 )
 
 // Store is a KvStore implementation for BadgerDB.

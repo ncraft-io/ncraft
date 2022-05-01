@@ -4,7 +4,6 @@ syntax = "proto3";
 
 package ncraft.messaging;
 
-import "mojo/core/any.proto";
 import "mojo/core/value.proto";
 
 option go_package = "github.com/ncraft-io/ncraft/go/pkg/ncraft/messaging;messaging";
@@ -15,5 +14,5 @@ option java_package = "io.ncraft.ncraft.messaging";
 message Message {
     string id = 1;
     map<string, mojo.core.Value> attributes = 2;
-    mojo.core.Any data = 3;
+    bytes data = 3;
 }

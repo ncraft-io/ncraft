@@ -17,6 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private ReceivedMessage() {
     id_ = "";
+    data_ = com.google.protobuf.ByteString.EMPTY;
     ackId_ = "";
     subscription_ = "";
   }
@@ -72,16 +73,8 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 26: {
-            org.mojolang.mojo.core.Any.Builder subBuilder = null;
-            if (data_ != null) {
-              subBuilder = data_.toBuilder();
-            }
-            data_ = input.readMessage(org.mojolang.mojo.core.Any.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(data_);
-              data_ = subBuilder.buildPartial();
-            }
 
+            data_ = input.readBytes();
             break;
           }
           case 90: {
@@ -273,29 +266,14 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int DATA_FIELD_NUMBER = 3;
-  private org.mojolang.mojo.core.Any data_;
+  private com.google.protobuf.ByteString data_;
   /**
-   * <code>.mojo.core.Any data = 3;</code>
-   * @return Whether the data field is set.
-   */
-  @java.lang.Override
-  public boolean hasData() {
-    return data_ != null;
-  }
-  /**
-   * <code>.mojo.core.Any data = 3;</code>
+   * <code>bytes data = 3;</code>
    * @return The data.
    */
   @java.lang.Override
-  public org.mojolang.mojo.core.Any getData() {
-    return data_ == null ? org.mojolang.mojo.core.Any.getDefaultInstance() : data_;
-  }
-  /**
-   * <code>.mojo.core.Any data = 3;</code>
-   */
-  @java.lang.Override
-  public org.mojolang.mojo.core.AnyOrBuilder getDataOrBuilder() {
-    return getData();
+  public com.google.protobuf.ByteString getData() {
+    return data_;
   }
 
   public static final int ACK_ID_FIELD_NUMBER = 11;
@@ -423,8 +401,8 @@ private static final long serialVersionUID = 0L;
         internalGetAttributes(),
         AttributesDefaultEntryHolder.defaultEntry,
         2);
-    if (data_ != null) {
-      output.writeMessage(3, getData());
+    if (!data_.isEmpty()) {
+      output.writeBytes(3, data_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ackId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 11, ackId_);
@@ -457,9 +435,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, attributes__);
     }
-    if (data_ != null) {
+    if (!data_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeMessageSize(3, getData());
+        .computeBytesSize(3, data_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ackId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, ackId_);
@@ -490,11 +468,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getId())) return false;
     if (!internalGetAttributes().equals(
         other.internalGetAttributes())) return false;
-    if (hasData() != other.hasData()) return false;
-    if (hasData()) {
-      if (!getData()
-          .equals(other.getData())) return false;
-    }
+    if (!getData()
+        .equals(other.getData())) return false;
     if (!getAckId()
         .equals(other.getAckId())) return false;
     if (!getSubscription()
@@ -521,10 +496,8 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ATTRIBUTES_FIELD_NUMBER;
       hash = (53 * hash) + internalGetAttributes().hashCode();
     }
-    if (hasData()) {
-      hash = (37 * hash) + DATA_FIELD_NUMBER;
-      hash = (53 * hash) + getData().hashCode();
-    }
+    hash = (37 * hash) + DATA_FIELD_NUMBER;
+    hash = (53 * hash) + getData().hashCode();
     hash = (37 * hash) + ACK_ID_FIELD_NUMBER;
     hash = (53 * hash) + getAckId().hashCode();
     hash = (37 * hash) + SUBSCRIPTION_FIELD_NUMBER;
@@ -691,12 +664,8 @@ private static final long serialVersionUID = 0L;
       id_ = "";
 
       internalGetMutableAttributes().clear();
-      if (dataBuilder_ == null) {
-        data_ = null;
-      } else {
-        data_ = null;
-        dataBuilder_ = null;
-      }
+      data_ = com.google.protobuf.ByteString.EMPTY;
+
       ackId_ = "";
 
       subscription_ = "";
@@ -737,11 +706,7 @@ private static final long serialVersionUID = 0L;
       result.id_ = id_;
       result.attributes_ = internalGetAttributes();
       result.attributes_.makeImmutable();
-      if (dataBuilder_ == null) {
-        result.data_ = data_;
-      } else {
-        result.data_ = dataBuilder_.build();
-      }
+      result.data_ = data_;
       result.ackId_ = ackId_;
       result.subscription_ = subscription_;
       if (publishTimeBuilder_ == null) {
@@ -803,8 +768,8 @@ private static final long serialVersionUID = 0L;
       }
       internalGetMutableAttributes().mergeFrom(
           other.internalGetAttributes());
-      if (other.hasData()) {
-        mergeData(other.getData());
+      if (other.getData() != com.google.protobuf.ByteString.EMPTY) {
+        setData(other.getData());
       }
       if (!other.getAckId().isEmpty()) {
         ackId_ = other.ackId_;
@@ -1054,123 +1019,38 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private org.mojolang.mojo.core.Any data_;
-    private com.google.protobuf.SingleFieldBuilderV3<
-        org.mojolang.mojo.core.Any, org.mojolang.mojo.core.Any.Builder, org.mojolang.mojo.core.AnyOrBuilder> dataBuilder_;
+    private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>.mojo.core.Any data = 3;</code>
-     * @return Whether the data field is set.
-     */
-    public boolean hasData() {
-      return dataBuilder_ != null || data_ != null;
-    }
-    /**
-     * <code>.mojo.core.Any data = 3;</code>
+     * <code>bytes data = 3;</code>
      * @return The data.
      */
-    public org.mojolang.mojo.core.Any getData() {
-      if (dataBuilder_ == null) {
-        return data_ == null ? org.mojolang.mojo.core.Any.getDefaultInstance() : data_;
-      } else {
-        return dataBuilder_.getMessage();
-      }
+    @java.lang.Override
+    public com.google.protobuf.ByteString getData() {
+      return data_;
     }
     /**
-     * <code>.mojo.core.Any data = 3;</code>
+     * <code>bytes data = 3;</code>
+     * @param value The data to set.
+     * @return This builder for chaining.
      */
-    public Builder setData(org.mojolang.mojo.core.Any value) {
-      if (dataBuilder_ == null) {
-        if (value == null) {
-          throw new NullPointerException();
-        }
-        data_ = value;
-        onChanged();
-      } else {
-        dataBuilder_.setMessage(value);
-      }
-
+    public Builder setData(com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      data_ = value;
+      onChanged();
       return this;
     }
     /**
-     * <code>.mojo.core.Any data = 3;</code>
-     */
-    public Builder setData(
-        org.mojolang.mojo.core.Any.Builder builderForValue) {
-      if (dataBuilder_ == null) {
-        data_ = builderForValue.build();
-        onChanged();
-      } else {
-        dataBuilder_.setMessage(builderForValue.build());
-      }
-
-      return this;
-    }
-    /**
-     * <code>.mojo.core.Any data = 3;</code>
-     */
-    public Builder mergeData(org.mojolang.mojo.core.Any value) {
-      if (dataBuilder_ == null) {
-        if (data_ != null) {
-          data_ =
-            org.mojolang.mojo.core.Any.newBuilder(data_).mergeFrom(value).buildPartial();
-        } else {
-          data_ = value;
-        }
-        onChanged();
-      } else {
-        dataBuilder_.mergeFrom(value);
-      }
-
-      return this;
-    }
-    /**
-     * <code>.mojo.core.Any data = 3;</code>
+     * <code>bytes data = 3;</code>
+     * @return This builder for chaining.
      */
     public Builder clearData() {
-      if (dataBuilder_ == null) {
-        data_ = null;
-        onChanged();
-      } else {
-        data_ = null;
-        dataBuilder_ = null;
-      }
-
-      return this;
-    }
-    /**
-     * <code>.mojo.core.Any data = 3;</code>
-     */
-    public org.mojolang.mojo.core.Any.Builder getDataBuilder() {
       
+      data_ = getDefaultInstance().getData();
       onChanged();
-      return getDataFieldBuilder().getBuilder();
-    }
-    /**
-     * <code>.mojo.core.Any data = 3;</code>
-     */
-    public org.mojolang.mojo.core.AnyOrBuilder getDataOrBuilder() {
-      if (dataBuilder_ != null) {
-        return dataBuilder_.getMessageOrBuilder();
-      } else {
-        return data_ == null ?
-            org.mojolang.mojo.core.Any.getDefaultInstance() : data_;
-      }
-    }
-    /**
-     * <code>.mojo.core.Any data = 3;</code>
-     */
-    private com.google.protobuf.SingleFieldBuilderV3<
-        org.mojolang.mojo.core.Any, org.mojolang.mojo.core.Any.Builder, org.mojolang.mojo.core.AnyOrBuilder> 
-        getDataFieldBuilder() {
-      if (dataBuilder_ == null) {
-        dataBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
-            org.mojolang.mojo.core.Any, org.mojolang.mojo.core.Any.Builder, org.mojolang.mojo.core.AnyOrBuilder>(
-                getData(),
-                getParentForChildren(),
-                isClean());
-        data_ = null;
-      }
-      return dataBuilder_;
+      return this;
     }
 
     private java.lang.Object ackId_ = "";

@@ -34,20 +34,18 @@ public final class MessageProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\036ncraft/messaging/message.proto\022\020ncraft" +
-      ".messaging\032\023mojo/core/any.proto\032\025mojo/co" +
-      "re/value.proto\"\267\001\n\007Message\022\n\n\002id\030\001 \001(\t\022=" +
-      "\n\nattributes\030\002 \003(\0132).ncraft.messaging.Me" +
-      "ssage.AttributesEntry\022\034\n\004data\030\003 \001(\0132\016.mo" +
-      "jo.core.Any\032C\n\017AttributesEntry\022\013\n\003key\030\001 " +
-      "\001(\t\022\037\n\005value\030\002 \001(\0132\020.mojo.core.Value:\0028\001" +
-      "Bk\n\032io.ncraft.ncraft.messagingB\014MessageP" +
-      "rotoP\001Z=github.com/ncraft-io/ncraft/go/p" +
-      "kg/ncraft/messaging;messagingb\006proto3"
+      ".messaging\032\025mojo/core/value.proto\"\247\001\n\007Me" +
+      "ssage\022\n\n\002id\030\001 \001(\t\022=\n\nattributes\030\002 \003(\0132)." +
+      "ncraft.messaging.Message.AttributesEntry" +
+      "\022\014\n\004data\030\003 \001(\014\032C\n\017AttributesEntry\022\013\n\003key" +
+      "\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.mojo.core.Value:" +
+      "\0028\001Bk\n\032io.ncraft.ncraft.messagingB\014Messa" +
+      "geProtoP\001Z=github.com/ncraft-io/ncraft/g" +
+      "o/pkg/ncraft/messaging;messagingb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          org.mojolang.mojo.core.AnyProto.getDescriptor(),
           org.mojolang.mojo.core.ValueProto.getDescriptor(),
         });
     internal_static_ncraft_messaging_Message_descriptor =
@@ -62,7 +60,6 @@ public final class MessageProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ncraft_messaging_Message_AttributesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    org.mojolang.mojo.core.AnyProto.getDescriptor();
     org.mojolang.mojo.core.ValueProto.getDescriptor();
   }
 

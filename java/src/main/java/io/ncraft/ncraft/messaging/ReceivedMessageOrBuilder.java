@@ -54,19 +54,10 @@ public interface ReceivedMessageOrBuilder extends
       java.lang.String key);
 
   /**
-   * <code>.mojo.core.Any data = 3;</code>
-   * @return Whether the data field is set.
-   */
-  boolean hasData();
-  /**
-   * <code>.mojo.core.Any data = 3;</code>
+   * <code>bytes data = 3;</code>
    * @return The data.
    */
-  org.mojolang.mojo.core.Any getData();
-  /**
-   * <code>.mojo.core.Any data = 3;</code>
-   */
-  org.mojolang.mojo.core.AnyOrBuilder getDataOrBuilder();
+  com.google.protobuf.ByteString getData();
 
   /**
    * <code>string ack_id = 11;</code>

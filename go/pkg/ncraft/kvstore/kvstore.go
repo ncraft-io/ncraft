@@ -3,7 +3,7 @@ package kvstore
 import (
     "context"
     "github.com/mojo-lang/core/go/pkg/mojo/core"
-    "github.com/ncraft-io/ncraft-go/pkg/logs"
+    "github.com/ncraft-io/ncraft/go/pkg/ncraft/logs"
     "sync"
 )
 

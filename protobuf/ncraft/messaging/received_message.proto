@@ -4,7 +4,6 @@ syntax = "proto3";
 
 package ncraft.messaging;
 
-import "mojo/core/any.proto";
 import "mojo/core/time.proto";
 import "mojo/core/value.proto";
 import "ncraft/messaging/message.proto";
@@ -17,7 +16,7 @@ option java_package = "io.ncraft.ncraft.messaging";
 message ReceivedMessage {
     string id = 1;
     map<string, mojo.core.Value> attributes = 2;
-    mojo.core.Any data = 3;
+    bytes data = 3;
     string ack_id = 11;
     string subscription = 12;
     mojo.core.Timestamp publish_time = 13;

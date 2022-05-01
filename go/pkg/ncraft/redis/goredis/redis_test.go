@@ -18,21 +18,21 @@ func TestNewGoRedis(t *testing.T) {
 
     cfg := &redis.Config{}
     cfg.Connections = redisConnection1 // redis addr
-    client = redis.NewRedis(cfg)
+    client = redis.New(cfg)
     _, err = client.Do(context.Background(), "ping")
     if err != nil {
         t.Fatal("connect failed")
     }
 
     cfg.Connections = invalidRedisConnection // invalid redis addr
-    client = redis.NewRedis(cfg)
+    client = redis.New(cfg)
     _, err = client.Do(context.Background(), "ping")
     if err == nil {
         t.Fatal("expect connect failed but not")
     }
 
     //cfg.Connections = redisClusterConnections // redis cluster addresses
-    //client = redis.NewRedis(cfg)
+    //client = redis.New(cfg)
     //_, err = client.Do(context.Background(), "ping")
     //if err != nil {
     //    t.Fatal("connect failed")
@@ -88,7 +88,7 @@ func TestRunBatch(t *testing.T) {
         },
     }
 
-    client := redis.NewRedis(&redis.Config{Connections: redisConnection1})
+    client := redis.New(&redis.Config{Connections: redisConnection1})
     batch := client.NewBatch()
     for _, cmd := range cmds {
         if err = batch.Put(cmd.cmd, cmd.args...); err != nil {
@@ -141,7 +141,7 @@ func TestStats(t *testing.T) {
         MinIdleConnections:   minIdle,
         MaxActiveConnections: maxActive,
     }
-    client := redis.NewRedis(&cfg)
+    client := redis.New(&cfg)
 
     time.Sleep(time.Second)
     stats := client.Stats()
@@ -160,7 +160,7 @@ func TestConfig_Default(t *testing.T) {
     cfg := redis.Config{
         Connections: redisConnection1,
     }
-    client := redis.NewRedis(&cfg)
+    client := redis.New(&cfg)
 
     time.Sleep(time.Second)
     stats := client.Stats()
@@ -187,7 +187,7 @@ func TestConfig_IdleTimeout(t *testing.T) {
         MaxActiveConnections: maxConn,
         IdleTimeout:          idleTimeout,
     }
-    client := redis.NewRedis(&cfg)
+    client := redis.New(&cfg)
 
     // stats at start
     time.Sleep(time.Second / 2)

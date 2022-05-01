@@ -7,7 +7,7 @@ import (
 )
 
 func TestString(t *testing.T) {
-    client := redis.NewRedis(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
+    client := redis.New(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
 
     testKey := `test_key\ntest_key`
     testValue := `test_value\ntest_value`
@@ -21,7 +21,7 @@ func TestString(t *testing.T) {
 }
 
 func TestStrings(t *testing.T) {
-    client := redis.NewRedis(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
+    client := redis.New(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
 
     testKey := `hm_test_key`
     testField1 := `test_field1`
@@ -52,7 +52,7 @@ func TestStrings(t *testing.T) {
 }
 
 func TestInt(t *testing.T) {
-    client := redis.NewRedis(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
+    client := redis.New(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
 
     _, _ = client.Do(context.Background(), "del", "int_key")
     resp, err := client.Do(context.Background(), "incr", "int_key")
@@ -66,7 +66,7 @@ func TestInt(t *testing.T) {
 }
 
 func TestInt64(t *testing.T) {
-    client := redis.NewRedis(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
+    client := redis.New(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
 
     _, _ = client.Do(context.Background(), "del", "int_key")
     resp, err := client.Do(context.Background(), "incr", "int_key")
@@ -84,7 +84,7 @@ func TestFloat64(t *testing.T) {
 }
 
 func TestBytes(t *testing.T) {
-    client := redis.NewRedis(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
+    client := redis.New(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
     testKey := `byte_key`
     testValue := []byte{12, 36, 134, 112, 12, 4, 6, 77, 22}
     if resp, err := client.Do(context.Background(), "set", testKey, testValue); err != nil {
@@ -107,7 +107,7 @@ func TestInts(t *testing.T) {
 }
 
 func TestStringMap(t *testing.T) {
-    client := redis.NewRedis(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
+    client := redis.New(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
 
     testKey := `hm_test_key`
     testField1 := `test_field1`
@@ -135,7 +135,7 @@ func TestStringMap(t *testing.T) {
 }
 
 func TestStringMap2(t *testing.T) {
-    client := redis.NewRedis(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
+    client := redis.New(&redis.Config{Connections: []string{"127.0.0.1:6379"}})
 
     testKey := `hm_test_key`
     testField1 := []byte{110, 111, 21, 113, 14, 115, 16, 17}

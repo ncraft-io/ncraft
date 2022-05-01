@@ -1,5 +1,5 @@
-| 字段 | 类型 | 格式类型 | 是否必须 | 默认值 | 说明 |
+| field | type | format | required | default | description |
 |---|---|---|---|---|---|
-| `ackId` | `string` |  | 否 |  |
-| `subscription` | `string` |  | 否 |  |
-| `publishTime` | `string` | `DateTime` | 否 |  |
+| `ackId` | `string` |  | N |  |
+| `publishTime` | `string` | `Timestamp` | N |  |  |
+| `subscription` | `string` |  | N |  |

@@ -1,1 +1,1 @@
-{"title":"ncraft.messaging.PushEndpoint","description":"","type":"object","properties":{"method":{"type":"string"},"service":{"type":"string"},"url":{"title":"Url","type":"string","format":"Url"}}}
+{"title":"ncraft.messaging.PushEndpoint","description":"","type":"object","properties":{"method":{"title":"mojo.core.String","type":"string"},"service":{"title":"mojo.core.String","type":"string"},"url":{"$ref":"#/components/schemas/mojo.core.Url"}}}

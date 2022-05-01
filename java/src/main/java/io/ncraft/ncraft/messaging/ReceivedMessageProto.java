@@ -34,25 +34,23 @@ public final class ReceivedMessageProto {
   static {
     java.lang.String[] descriptorData = {
       "\n\'ncraft/messaging/received_message.prot" +
-      "o\022\020ncraft.messaging\032\023mojo/core/any.proto" +
-      "\032\024mojo/core/time.proto\032\025mojo/core/value." +
-      "proto\032\036ncraft/messaging/message.proto\"\231\002" +
-      "\n\017ReceivedMessage\022\n\n\002id\030\001 \001(\t\022E\n\nattribu" +
-      "tes\030\002 \003(\01321.ncraft.messaging.ReceivedMes" +
-      "sage.AttributesEntry\022\034\n\004data\030\003 \001(\0132\016.moj" +
-      "o.core.Any\022\016\n\006ack_id\030\013 \001(\t\022\024\n\014subscripti" +
-      "on\030\014 \001(\t\022*\n\014publish_time\030\r \001(\0132\024.mojo.co" +
-      "re.Timestamp\032C\n\017AttributesEntry\022\013\n\003key\030\001" +
-      " \001(\t\022\037\n\005value\030\002 \001(\0132\020.mojo.core.Value:\0028" +
-      "\001Bs\n\032io.ncraft.ncraft.messagingB\024Receive" +
-      "dMessageProtoP\001Z=github.com/ncraft-io/nc" +
-      "raft/go/pkg/ncraft/messaging;messagingb\006" +
-      "proto3"
+      "o\022\020ncraft.messaging\032\024mojo/core/time.prot" +
+      "o\032\025mojo/core/value.proto\032\036ncraft/messagi" +
+      "ng/message.proto\"\211\002\n\017ReceivedMessage\022\n\n\002" +
+      "id\030\001 \001(\t\022E\n\nattributes\030\002 \003(\01321.ncraft.me" +
+      "ssaging.ReceivedMessage.AttributesEntry\022" +
+      "\014\n\004data\030\003 \001(\014\022\016\n\006ack_id\030\013 \001(\t\022\024\n\014subscri" +
+      "ption\030\014 \001(\t\022*\n\014publish_time\030\r \001(\0132\024.mojo" +
+      ".core.Timestamp\032C\n\017AttributesEntry\022\013\n\003ke" +
+      "y\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.mojo.core.Value" +
+      ":\0028\001Bs\n\032io.ncraft.ncraft.messagingB\024Rece" +
+      "ivedMessageProtoP\001Z=github.com/ncraft-io" +
+      "/ncraft/go/pkg/ncraft/messaging;messagin" +
+      "gb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
-          org.mojolang.mojo.core.AnyProto.getDescriptor(),
           org.mojolang.mojo.core.TimeProto.getDescriptor(),
           org.mojolang.mojo.core.ValueProto.getDescriptor(),
           io.ncraft.ncraft.messaging.MessageProto.getDescriptor(),
@@ -69,7 +67,6 @@ public final class ReceivedMessageProto {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ncraft_messaging_ReceivedMessage_AttributesEntry_descriptor,
         new java.lang.String[] { "Key", "Value", });
-    org.mojolang.mojo.core.AnyProto.getDescriptor();
     org.mojolang.mojo.core.TimeProto.getDescriptor();
     org.mojolang.mojo.core.ValueProto.getDescriptor();
     io.ncraft.ncraft.messaging.MessageProto.getDescriptor();

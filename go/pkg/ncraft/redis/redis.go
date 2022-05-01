@@ -2,23 +2,11 @@ package redis
 
 import (
     "context"
-    "errors"
     "fmt"
     "github.com/ncraft-io/ncraft/go/pkg/ncraft/config"
     "github.com/ncraft-io/ncraft/go/pkg/ncraft/logs"
     "sync"
 )
-
-var plugins map[string]func(*Config) Redis
-var pluginsOnce sync.Once
-
-func RegisterRedis(name string, r func(*Config) Redis) {
-    pluginsOnce.Do(func() {
-        plugins = make(map[string]func(*Config) Redis)
-    })
-
-    plugins[name] = r
-}
 
 type Redis interface {
     // Do execute a redis command with random number arguments. First argument will
@@ -53,7 +41,7 @@ type Batch interface {
     Put(cmd string, arguments ...interface{}) error
 }
 
-func NewRedis(cfg *Config) Redis {
+func New(cfg *Config) Redis {
     if cfg == nil {
         cfg = &Config{}
         if err := config.Get("redis").Scan(cfg); err != nil {
@@ -86,13 +74,13 @@ func NewRedis(cfg *Config) Redis {
     panic(fmt.Sprintf("the redis client implementor (%s) not found", cfg.Implementor))
 }
 
-func MGet(redis Redis, keys ...string) (interface{}, error) {
-    if redis != nil {
-        var args []interface{}
-        for _, key := range keys {
-            args = append(args, key)
-        }
-        return redis.Do(context.Background(), "MGET", args...)
-    }
-    return nil, errors.New("the redis handler is nil")
+var plugins map[string]func(*Config) Redis
+var pluginsOnce sync.Once
+
+func RegisterRedis(name string, r func(*Config) Redis) {
+    pluginsOnce.Do(func() {
+        plugins = make(map[string]func(*Config) Redis)
+    })
+
+    plugins[name] = r
 }
