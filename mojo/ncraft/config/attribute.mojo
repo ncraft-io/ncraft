@@ -1,0 +1,2 @@
+
+attribute config: Bool

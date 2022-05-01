@@ -8,9 +8,9 @@ package ncraft {
         organization: 'ncraft.io'
     }]
     dependencies: {
-        'mojo.core': {path: '../core', version: '^0.1'}
-        'mojo.document': {path: '../document', version: '^0.1'}
-        'mojo.openapi': {path: '../openapi', version: '^0.1'}
+        'mojo.core': {path: '../../mojo/core', version: '^0.1'}
+        'mojo.document': {path: '../../mojo/document', version: '^0.1'}
+        'mojo.openapi': {path: '../../mojo/openapi', version: '^0.1'}
     }
 
     repository: 'https://github.com/ncraft-io/ncraft'

@@ -1,0 +1,1 @@
+{"title":"ncraft.messaging.Config","description":"","type":"object","properties":{"broker":{"type":"string"},"provider":{"type":"string"},"serviceName":{"type":"string"},"subscriptions":{"type":"array","items":{"$ref":"#/components/schemas/ncraft.messaging.Subscription"}}}}

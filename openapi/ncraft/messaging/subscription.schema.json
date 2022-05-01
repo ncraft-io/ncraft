@@ -1,0 +1,1 @@
+{"title":"ncraft.messaging.Subscription","description":"","type":"object","properties":{"autoAck":{"type":"boolean"},"endpoint":{"$ref":"#/components/schemas/ncraft.messaging.PushEndpoint"},"name":{"type":"string"},"topic":{"type":"string"}}}

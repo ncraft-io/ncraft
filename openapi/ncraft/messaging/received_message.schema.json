@@ -1,0 +1,1 @@
+{"title":"ncraft.messaging.ReceivedMessage","description":"","allOf":[{"$ref":"#/components/schemas/ncraft.messaging.Message"},{"title":"ncraft.messaging.ReceivedMessage","type":"object","properties":{"ackId":{"type":"string"},"publishTime":{"title":"DateTime","type":"string","format":"DateTime"},"subscription":{"type":"string"}}}]}

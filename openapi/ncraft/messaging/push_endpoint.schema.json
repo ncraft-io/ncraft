@@ -1,0 +1,1 @@
+{"title":"ncraft.messaging.PushEndpoint","description":"","type":"object","properties":{"method":{"type":"string"},"service":{"type":"string"},"url":{"title":"Url","type":"string","format":"Url"}}}
