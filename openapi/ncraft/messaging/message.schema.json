@@ -1,1 +1,23 @@
-{"title":"ncraft.messaging.Message","description":"","type":"object","properties":{"attributes":{"title":"mojo.core.Map","type":"object","additionalProperties":{"$ref":"#/components/schemas/mojo.core.Value"}},"data":{"title":"mojo.core.Bytes","type":"string","format":"Bytes"},"id":{"title":"mojo.core.String","type":"string"}}}
+{
+    "title": "ncraft.messaging.Message",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "attributes": {
+            "title": "mojo.core.Map",
+            "type": "object",
+            "additionalProperties": {
+                "$ref": "#/components/schemas/mojo.core.Value"
+            }
+        },
+        "data": {
+            "title": "mojo.core.Bytes",
+            "type": "string",
+            "format": "Bytes"
+        },
+        "id": {
+            "title": "mojo.core.String",
+            "type": "string"
+        }
+    }
+}

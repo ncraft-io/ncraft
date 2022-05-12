@@ -1,1 +1,26 @@
-{"title":"ncraft.messaging.Config","description":"","type":"object","properties":{"broker":{"title":"mojo.core.String","type":"string"},"provider":{"title":"mojo.core.String","type":"string"},"serviceName":{"title":"mojo.core.String","type":"string"},"subscriptions":{"title":"mojo.core.Array","type":"array","items":{"$ref":"#/components/schemas/ncraft.messaging.Subscription"}}}}
+{
+    "title": "ncraft.messaging.Config",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "broker": {
+            "title": "mojo.core.String",
+            "type": "string"
+        },
+        "provider": {
+            "title": "mojo.core.String",
+            "type": "string"
+        },
+        "serviceName": {
+            "title": "mojo.core.String",
+            "type": "string"
+        },
+        "subscriptions": {
+            "title": "mojo.core.Array",
+            "type": "array",
+            "items": {
+                "$ref": "#/components/schemas/ncraft.messaging.Subscription"
+            }
+        }
+    }
+}

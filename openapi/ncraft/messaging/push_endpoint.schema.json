@@ -1,1 +1,18 @@
-{"title":"ncraft.messaging.PushEndpoint","description":"","type":"object","properties":{"method":{"title":"mojo.core.String","type":"string"},"service":{"title":"mojo.core.String","type":"string"},"url":{"$ref":"#/components/schemas/mojo.core.Url"}}}
+{
+    "title": "ncraft.messaging.PushEndpoint",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "method": {
+            "title": "mojo.core.String",
+            "type": "string"
+        },
+        "service": {
+            "title": "mojo.core.String",
+            "type": "string"
+        },
+        "url": {
+            "$ref": "#/components/schemas/mojo.core.Url"
+        }
+    }
+}

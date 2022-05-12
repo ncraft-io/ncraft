@@ -1,1 +1,26 @@
-{"title":"ncraft.messaging.ReceivedMessage","description":"","allOf":[{"$ref":"#/components/schemas/ncraft.messaging.Message"},{"title":"ncraft.messaging.ReceivedMessage","type":"object","properties":{"ackId":{"title":"mojo.core.String","type":"string"},"publishTime":{"$ref":"#/components/schemas/mojo.core.Timestamp"},"subscription":{"title":"mojo.core.String","type":"string"}}}]}
+{
+    "title": "ncraft.messaging.ReceivedMessage",
+    "description": "",
+    "allOf": [
+        {
+            "$ref": "#/components/schemas/ncraft.messaging.Message"
+        },
+        {
+            "title": "ncraft.messaging.ReceivedMessage",
+            "type": "object",
+            "properties": {
+                "ackId": {
+                    "title": "mojo.core.String",
+                    "type": "string"
+                },
+                "publishTime": {
+                    "$ref": "#/components/schemas/mojo.core.Timestamp"
+                },
+                "subscription": {
+                    "title": "mojo.core.String",
+                    "type": "string"
+                }
+            }
+        }
+    ]
+}
