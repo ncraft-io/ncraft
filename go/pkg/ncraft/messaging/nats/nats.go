@@ -9,8 +9,16 @@ import (
 )
 
 func init() {
-    messaging.Register("nats", NewNats)
+    messaging.Register("nats", func(config *messaging.Config) (messaging.Queue, error) {
+        return New(config)
+    })
 }
+
+type Msg = nats.Msg
+
+var ErrConnectionClosed = nats.ErrConnectionClosed
+var ErrTimeout = nats.ErrTimeout
+var ErrNoResponders = nats.ErrNoResponders
 
 // Nats implement the Queue interface
 type Nats struct {
@@ -21,7 +29,7 @@ type Nats struct {
 }
 
 // NewNats creates a new Nats connection
-func NewNats(config *messaging.Config) (messaging.Queue, error) {
+func New(config *messaging.Config) (*Nats, error) {
     if nc, err := nats.Connect(config.ServiceName); err != nil {
         return nil, err
     } else {
@@ -31,6 +39,13 @@ func NewNats(config *messaging.Config) (messaging.Queue, error) {
             subscriptions: map[string]*nats.Subscription{},
         }, nil
     }
+}
+
+func (n *Nats) GetConn() *nats.Conn {
+    if n != nil {
+        return n.conn
+    }
+    return nil
 }
 
 // Publish to public the messages to topic
