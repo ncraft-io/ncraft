@@ -7,6 +7,7 @@ import (
     "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/reader"
     "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
     "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source/file"
+    "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source/flag"
 )
 
 // Config is an interface abstraction for dynamic configuration
@@ -80,8 +81,8 @@ func Get(path ...string) reader.Value {
 }
 
 // Load config sources
-func Load(source ...source.Source) error {
-    return DefaultConfig.Load(source...)
+func Load(sources ...source.Source) error {
+    return DefaultConfig.Load(sources...)
 }
 
 // Watch a value for changes
@@ -94,4 +95,8 @@ func LoadFile(path string) error {
     return Load(file.NewSource(
         file.WithPath(path),
     ))
+}
+
+func LoadFlag() error {
+    return Load(flag.NewSource())
 }

@@ -115,6 +115,8 @@ github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9G
 github.com/modern-go/reflect2 v1.0.2/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjYzDa0/r8luk=
 github.com/mojo-lang/core/go v0.0.0-20220430095901-cfad7058b7c4 h1:EZCqRS//8bii2vSGEgPgJayW5eaAvUhpj+5ODxRk7IY=
 github.com/mojo-lang/core/go v0.0.0-20220430095901-cfad7058b7c4/go.mod h1:MdE3mbieft+zVx8iDWNSYzS6bkuUWKmnUVwCHGOofpU=
+github.com/mojo-lang/core/go v0.0.0-20220520092744-d044478f0e2a h1:p9RfxgmNoGG5KyLRlUfN9FVqYktFcfgxo7DMUqWu/6U=
+github.com/mojo-lang/core/go v0.0.0-20220520092744-d044478f0e2a/go.mod h1:MdE3mbieft+zVx8iDWNSYzS6bkuUWKmnUVwCHGOofpU=
 github.com/nats-io/jwt/v2 v2.2.1-0.20220330180145-442af02fd36a h1:lem6QCvxR0Y28gth9P+wV2K/zYUUAkJ+55U8cpS0p5I=
 github.com/nats-io/jwt/v2 v2.2.1-0.20220330180145-442af02fd36a/go.mod h1:0tqz9Hlu6bCBFLWAASKhE5vUA4c24L9KPUUgvwumE/k=
 github.com/nats-io/nats-server/v2 v2.8.1 h1:WZ9m/d8rklkWo6opo3X927vXnuaE00VEEl5zXcpL6qw=

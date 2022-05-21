@@ -30,6 +30,10 @@ const (
 const maxConfigsFolderLevel = 3
 
 func init() {
+    Load(defaultSources()...)
+}
+
+func defaultSources() []source.Source {
     workDir, _ := os.Getwd()
     dirs := []string{
         filepath.Join(workDir, "conf"),
@@ -52,11 +56,7 @@ func init() {
         }
     }
     sources = append(sources, env.NewSource())
-
-    err := Load(sources...)
-    if err != nil {
-        // panic(err)
-    }
+    return sources
 }
 
 func newFileSources(dir string, env string) []source.Source {

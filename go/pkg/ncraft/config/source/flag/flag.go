@@ -4,6 +4,7 @@ import (
     "errors"
     "flag"
     "github.com/imdario/mergo"
+    "github.com/mojo-lang/core/go/pkg/mojo/core/strcase"
     source2 "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
     "strings"
     "time"
@@ -21,8 +22,12 @@ func (fs *flagsrc) Read() (*source2.ChangeSet, error) {
     var changes map[string]interface{}
 
     visitFn := func(f *flag.Flag) {
-        n := strings.ToLower(f.Name)
+        n := f.Name // strings.ToLower(f.Name)
         keys := strings.FieldsFunc(n, split)
+        for i, k := range keys {
+            keys[i] = strcase.ToLowerCamel(k)
+        }
+
         reverse(keys)
 
         tmp := make(map[string]interface{})
@@ -63,7 +68,7 @@ func (fs *flagsrc) Read() (*source2.ChangeSet, error) {
 }
 
 func split(r rune) bool {
-    return r == '-' || r == '_'
+    return r == '-' || r == '.'
 }
 
 func reverse(ss []string) {

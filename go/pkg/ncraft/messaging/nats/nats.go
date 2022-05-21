@@ -28,7 +28,7 @@ type Nats struct {
     shutdown      bool
 }
 
-// NewNats creates a new Nats connection
+// New NewNats creates a new Nats connection
 func New(config *messaging.Config) (*Nats, error) {
     if nc, err := nats.Connect(config.ServiceName); err != nil {
         return nil, err
