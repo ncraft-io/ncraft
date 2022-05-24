@@ -14,6 +14,7 @@ option java_package = "io.ncraft.ncraft.messaging";
 message Subscription {
     string name = 1;
     string topic = 5;
-    bool auto_ack = 6;
+    string group = 6;
+    bool auto_ack = 9;
     PushEndpoint endpoint = 10;
 }

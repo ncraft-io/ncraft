@@ -67,7 +67,7 @@ func (n *Nats) Publish(ctx context.Context, topic string, messages ...*messaging
 
 // Subscribe implements Subscribe for Nats
 func (n *Nats) Subscribe(opts *messaging.Subscription, h messaging.Handler) {
-    sub, err := n.conn.QueueSubscribe(opts.Topic, opts.Name, func(m *nats.Msg) {
+    subscribe := func(m *nats.Msg) {
         msg := &messaging.SubMessage{}
         if err := jsoniter.ConfigFastest.Unmarshal(m.Data, msg); err != nil {
             logs.Warnw("Nats: Failed to unmarshal msg from topic", "topic", opts.Topic, "error", err.Error())
@@ -85,12 +85,20 @@ func (n *Nats) Subscribe(opts *messaging.Subscription, h messaging.Handler) {
         if opts.AutoAck {
             msg.Ack()
         }
-    })
+    }
 
-    n.subscriptions[opts.Topic] = sub
-
-    if err != nil {
-        logs.Warnw("Nats: failed to subscribe", "topic", opts.Topic, "error", err)
+    if len(opts.Group) > 0 {
+        sub, err := n.conn.QueueSubscribe(opts.Topic, opts.Group, subscribe)
+        n.subscriptions[opts.Topic] = sub
+        if err != nil {
+            logs.Warnw("Nats: failed to subscribe with group", "topic", opts.Topic, "group", opts.Group, "error", err)
+        }
+    } else {
+        sub, err := n.conn.Subscribe(opts.Topic, subscribe)
+        n.subscriptions[opts.Topic] = sub
+        if err != nil {
+            logs.Warnw("Nats: failed to subscribe", "topic", opts.Topic, "error", err)
+        }
     }
 }
 

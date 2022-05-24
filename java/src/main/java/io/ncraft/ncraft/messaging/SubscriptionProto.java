@@ -30,13 +30,13 @@ public final class SubscriptionProto {
     java.lang.String[] descriptorData = {
       "\n#ncraft/messaging/subscription.proto\022\020n" +
       "craft.messaging\032$ncraft/messaging/push_e" +
-      "ndpoint.proto\"o\n\014Subscription\022\014\n\004name\030\001 " +
-      "\001(\t\022\r\n\005topic\030\005 \001(\t\022\020\n\010auto_ack\030\006 \001(\010\0220\n\010" +
-      "endpoint\030\n \001(\0132\036.ncraft.messaging.PushEn" +
-      "dpointBp\n\032io.ncraft.ncraft.messagingB\021Su" +
-      "bscriptionProtoP\001Z=github.com/ncraft-io/" +
-      "ncraft/go/pkg/ncraft/messaging;messaging" +
-      "b\006proto3"
+      "ndpoint.proto\"~\n\014Subscription\022\014\n\004name\030\001 " +
+      "\001(\t\022\r\n\005topic\030\005 \001(\t\022\r\n\005group\030\006 \001(\t\022\020\n\010aut" +
+      "o_ack\030\t \001(\010\0220\n\010endpoint\030\n \001(\0132\036.ncraft.m" +
+      "essaging.PushEndpointBp\n\032io.ncraft.ncraf" +
+      "t.messagingB\021SubscriptionProtoP\001Z=github" +
+      ".com/ncraft-io/ncraft/go/pkg/ncraft/mess" +
+      "aging;messagingb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -48,7 +48,7 @@ public final class SubscriptionProto {
     internal_static_ncraft_messaging_Subscription_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ncraft_messaging_Subscription_descriptor,
-        new java.lang.String[] { "Name", "Topic", "AutoAck", "Endpoint", });
+        new java.lang.String[] { "Name", "Topic", "Group", "AutoAck", "Endpoint", });
     io.ncraft.ncraft.messaging.PushEndpointProto.getDescriptor();
   }
 

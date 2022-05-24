@@ -18,6 +18,7 @@ private static final long serialVersionUID = 0L;
   private Subscription() {
     name_ = "";
     topic_ = "";
+    group_ = "";
   }
 
   @java.lang.Override
@@ -62,7 +63,13 @@ private static final long serialVersionUID = 0L;
             topic_ = s;
             break;
           }
-          case 48: {
+          case 50: {
+            java.lang.String s = input.readStringRequireUtf8();
+
+            group_ = s;
+            break;
+          }
+          case 72: {
 
             autoAck_ = input.readBool();
             break;
@@ -188,10 +195,48 @@ private static final long serialVersionUID = 0L;
     }
   }
 
-  public static final int AUTO_ACK_FIELD_NUMBER = 6;
+  public static final int GROUP_FIELD_NUMBER = 6;
+  private volatile java.lang.Object group_;
+  /**
+   * <code>string group = 6;</code>
+   * @return The group.
+   */
+  @java.lang.Override
+  public java.lang.String getGroup() {
+    java.lang.Object ref = group_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      group_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string group = 6;</code>
+   * @return The bytes for group.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getGroupBytes() {
+    java.lang.Object ref = group_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      group_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
+  }
+
+  public static final int AUTO_ACK_FIELD_NUMBER = 9;
   private boolean autoAck_;
   /**
-   * <code>bool auto_ack = 6;</code>
+   * <code>bool auto_ack = 9;</code>
    * @return The autoAck.
    */
   @java.lang.Override
@@ -245,8 +290,11 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 5, topic_);
     }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(group_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 6, group_);
+    }
     if (autoAck_ != false) {
-      output.writeBool(6, autoAck_);
+      output.writeBool(9, autoAck_);
     }
     if (endpoint_ != null) {
       output.writeMessage(10, getEndpoint());
@@ -266,9 +314,12 @@ private static final long serialVersionUID = 0L;
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(topic_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, topic_);
     }
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(group_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, group_);
+    }
     if (autoAck_ != false) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBoolSize(6, autoAck_);
+        .computeBoolSize(9, autoAck_);
     }
     if (endpoint_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -293,6 +344,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getName())) return false;
     if (!getTopic()
         .equals(other.getTopic())) return false;
+    if (!getGroup()
+        .equals(other.getGroup())) return false;
     if (getAutoAck()
         != other.getAutoAck()) return false;
     if (hasEndpoint() != other.hasEndpoint()) return false;
@@ -315,6 +368,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getName().hashCode();
     hash = (37 * hash) + TOPIC_FIELD_NUMBER;
     hash = (53 * hash) + getTopic().hashCode();
+    hash = (37 * hash) + GROUP_FIELD_NUMBER;
+    hash = (53 * hash) + getGroup().hashCode();
     hash = (37 * hash) + AUTO_ACK_FIELD_NUMBER;
     hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
         getAutoAck());
@@ -459,6 +514,8 @@ private static final long serialVersionUID = 0L;
 
       topic_ = "";
 
+      group_ = "";
+
       autoAck_ = false;
 
       if (endpointBuilder_ == null) {
@@ -495,6 +552,7 @@ private static final long serialVersionUID = 0L;
       io.ncraft.ncraft.messaging.Subscription result = new io.ncraft.ncraft.messaging.Subscription(this);
       result.name_ = name_;
       result.topic_ = topic_;
+      result.group_ = group_;
       result.autoAck_ = autoAck_;
       if (endpointBuilder_ == null) {
         result.endpoint_ = endpoint_;
@@ -555,6 +613,10 @@ private static final long serialVersionUID = 0L;
       }
       if (!other.getTopic().isEmpty()) {
         topic_ = other.topic_;
+        onChanged();
+      }
+      if (!other.getGroup().isEmpty()) {
+        group_ = other.group_;
         onChanged();
       }
       if (other.getAutoAck() != false) {
@@ -744,9 +806,85 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
+    private java.lang.Object group_ = "";
+    /**
+     * <code>string group = 6;</code>
+     * @return The group.
+     */
+    public java.lang.String getGroup() {
+      java.lang.Object ref = group_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        group_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
+    }
+    /**
+     * <code>string group = 6;</code>
+     * @return The bytes for group.
+     */
+    public com.google.protobuf.ByteString
+        getGroupBytes() {
+      java.lang.Object ref = group_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        group_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string group = 6;</code>
+     * @param value The group to set.
+     * @return This builder for chaining.
+     */
+    public Builder setGroup(
+        java.lang.String value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  
+      group_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string group = 6;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearGroup() {
+      
+      group_ = getDefaultInstance().getGroup();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string group = 6;</code>
+     * @param value The bytes for group to set.
+     * @return This builder for chaining.
+     */
+    public Builder setGroupBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      group_ = value;
+      onChanged();
+      return this;
+    }
+
     private boolean autoAck_ ;
     /**
-     * <code>bool auto_ack = 6;</code>
+     * <code>bool auto_ack = 9;</code>
      * @return The autoAck.
      */
     @java.lang.Override
@@ -754,7 +892,7 @@ private static final long serialVersionUID = 0L;
       return autoAck_;
     }
     /**
-     * <code>bool auto_ack = 6;</code>
+     * <code>bool auto_ack = 9;</code>
      * @param value The autoAck to set.
      * @return This builder for chaining.
      */
@@ -765,7 +903,7 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>bool auto_ack = 6;</code>
+     * <code>bool auto_ack = 9;</code>
      * @return This builder for chaining.
      */
     public Builder clearAutoAck() {

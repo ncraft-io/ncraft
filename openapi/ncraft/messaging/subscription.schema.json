@@ -10,6 +10,10 @@
         "endpoint": {
             "$ref": "#/components/schemas/ncraft.messaging.PushEndpoint"
         },
+        "group": {
+            "title": "mojo.core.String",
+            "type": "string"
+        },
         "name": {
             "title": "mojo.core.String",
             "type": "string"

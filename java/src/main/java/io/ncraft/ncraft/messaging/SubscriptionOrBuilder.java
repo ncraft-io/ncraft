@@ -32,7 +32,19 @@ public interface SubscriptionOrBuilder extends
       getTopicBytes();
 
   /**
-   * <code>bool auto_ack = 6;</code>
+   * <code>string group = 6;</code>
+   * @return The group.
+   */
+  java.lang.String getGroup();
+  /**
+   * <code>string group = 6;</code>
+   * @return The bytes for group.
+   */
+  com.google.protobuf.ByteString
+      getGroupBytes();
+
+  /**
+   * <code>bool auto_ack = 9;</code>
    * @return The autoAck.
    */
   boolean getAutoAck();
