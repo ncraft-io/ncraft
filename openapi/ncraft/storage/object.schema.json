@@ -1,0 +1,33 @@
+{
+    "title": "ncraft.storage.Object",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "content": {
+            "title": "mojo.core.Bytes",
+            "type": "string",
+            "format": "Bytes"
+        },
+        "contentType": {
+            "$ref": "#/components/schemas/mojo.core.MediaType"
+        },
+        "etag": {
+            "title": "mojo.core.String",
+            "type": "string"
+        },
+        "key": {
+            "title": "mojo.core.String",
+            "description": "Name of the object",
+            "type": "string"
+        },
+        "lastModified": {
+            "$ref": "#/components/schemas/mojo.core.Timestamp"
+        },
+        "size": {
+            "title": "mojo.core.Int64",
+            "description": "Size in bytes of the object.",
+            "type": "integer",
+            "format": "Int64"
+        }
+    }
+}

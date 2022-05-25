@@ -26,7 +26,7 @@ type Storage interface {
     BucketName() string
     SetBucket(name string) error
 
-    Read(key string, options core.Options) (error, *Object)
+    Read(key string, options core.Options) (*Object, error)
     Write(object *Object, options core.Options) error
 
     Download(key string, path string, options core.Options) error
@@ -57,6 +57,10 @@ func GetStorage() Storage {
     return storage
 }
 
+func Read(key string, options core.Options) (*Object, error) {
+    return GetStorage().Read(key, options)
+}
+
 func Download(key string, path string, options core.Options) error {
     return GetStorage().Download(key, path, options)
 }
@@ -71,7 +75,7 @@ type DummyStorage struct {
 func NewDummyStorage() Storage                                                          { return &DummyStorage{err: errors.New("DummyStorage: not implement")} }
 func (s *DummyStorage) BucketName() string                                              { return "dummy" }
 func (s *DummyStorage) SetBucket(name string) error                                     { return s.err }
-func (s *DummyStorage) Read(key string, options core.Options) (error, *Object)          { return s.err, nil }
+func (s *DummyStorage) Read(key string, options core.Options) (*Object, error)          { return nil, s.err }
 func (s *DummyStorage) Write(object *Object, options core.Options) error                { return s.err }
 func (s *DummyStorage) Download(key string, path string, options core.Options) error    { return s.err }
 func (s *DummyStorage) Upload(localFile string, key string, options core.Options) error { return s.err }

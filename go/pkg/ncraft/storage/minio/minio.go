@@ -7,6 +7,7 @@ import (
     "github.com/ncraft-io/ncraft/go/pkg/ncraft/logs"
     "github.com/ncraft-io/ncraft/go/pkg/ncraft/storage"
     "github.com/pkg/errors"
+    "io"
     "strings"
 )
 
@@ -55,8 +56,44 @@ func (m *Minio) SetBucket(name string) error {
     return nil
 }
 
-func (m *Minio) Read(key string, options core.Options) (error, *storage.Object) {
-    return nil, nil
+func (m *Minio) Read(key string, options core.Options) (*storage.Object, error) {
+    obj, err := m.client.GetObject(m.bucketName, key, minio.GetObjectOptions{})
+    if err != nil {
+        errResponse := &minio.ErrorResponse{}
+        if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" && strings.HasPrefix(key, "/") {
+            key = key[1:]
+            bucketName := m.bucketName
+            if pos := strings.Index(key, "/"); pos > 0 {
+                bucketName = key[0:pos]
+                key = key[pos:]
+            }
+            if obj, err = m.client.GetObject(bucketName, key, minio.GetObjectOptions{}); err != nil {
+                return nil, err
+            }
+        }
+    }
+
+    info, err := obj.Stat()
+    if err != nil {
+        return nil, err
+    }
+    object := &storage.Object{
+        Etag:         info.ETag,
+        Key:          info.Key,
+        LastModified: core.FromTime(info.LastModified),
+        Size:         info.Size,
+    }
+
+    if object.ContentType, err = core.ParseMediaType(info.ContentType); err != nil {
+        return nil, err
+    }
+
+    object.Content = make([]byte, info.Size)
+    if size, err := obj.Read(object.Content); (err != nil && err != io.EOF) || size != int(info.Size) {
+        return nil, errors.Errorf("failed to read the content from the minio object, error %s", err.Error())
+    }
+
+    return object, nil
 }
 
 func (m *Minio) Write(object *storage.Object, options core.Options) error {
@@ -68,12 +105,13 @@ func (m *Minio) Download(key string, path string, options core.Options) error {
         errResponse := &minio.ErrorResponse{}
         if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" && strings.HasPrefix(key, "/") {
             key = key[1:]
+            bucketName := m.bucketName
             if pos := strings.Index(key, "/"); pos > 0 {
-                bucketName := key[0:pos]
+                bucketName = key[0:pos]
                 key = key[pos:]
-                if err = m.client.FGetObject(bucketName, key, path, minio.GetObjectOptions{}); err == nil {
-                    return nil
-                }
+            }
+            if err = m.client.FGetObject(bucketName, key, path, minio.GetObjectOptions{}); err == nil {
+                return nil
             }
         }
 

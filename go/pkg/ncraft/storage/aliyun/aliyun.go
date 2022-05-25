@@ -61,7 +61,7 @@ func (a *Aliyun) SetBucket(name string) error {
     return nil
 }
 
-func (a *Aliyun) Read(key string, options core.Options) (error, *storage.Object) {
+func (a *Aliyun) Read(key string, options core.Options) (*storage.Object, error) {
     return nil, nil
 }
 
