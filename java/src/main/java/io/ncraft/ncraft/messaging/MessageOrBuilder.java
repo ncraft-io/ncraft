@@ -54,8 +54,14 @@ public interface MessageOrBuilder extends
       java.lang.String key);
 
   /**
-   * <code>bytes data = 3;</code>
+   * <code>string data = 3;</code>
    * @return The data.
    */
-  com.google.protobuf.ByteString getData();
+  java.lang.String getData();
+  /**
+   * <code>string data = 3;</code>
+   * @return The bytes for data.
+   */
+  com.google.protobuf.ByteString
+      getDataBytes();
 }

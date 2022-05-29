@@ -16,4 +16,10 @@ message Config {
     string broker = 2;
     string service_name = 3;
     repeated Subscription subscriptions = 10;
+    Nats nats = 15;
+}
+
+message Nats {
+    string jet_stream = 1;
+    repeated string topic_names = 2;
 }

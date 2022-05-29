@@ -80,6 +80,19 @@ private static final long serialVersionUID = 0L;
                 input.readMessage(io.ncraft.ncraft.messaging.Subscription.parser(), extensionRegistry));
             break;
           }
+          case 122: {
+            io.ncraft.ncraft.messaging.Nats.Builder subBuilder = null;
+            if (nats_ != null) {
+              subBuilder = nats_.toBuilder();
+            }
+            nats_ = input.readMessage(io.ncraft.ncraft.messaging.Nats.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(nats_);
+              nats_ = subBuilder.buildPartial();
+            }
+
+            break;
+          }
           default: {
             if (!parseUnknownField(
                 input, unknownFields, extensionRegistry, tag)) {
@@ -269,6 +282,32 @@ private static final long serialVersionUID = 0L;
     return subscriptions_.get(index);
   }
 
+  public static final int NATS_FIELD_NUMBER = 15;
+  private io.ncraft.ncraft.messaging.Nats nats_;
+  /**
+   * <code>.ncraft.messaging.Nats nats = 15;</code>
+   * @return Whether the nats field is set.
+   */
+  @java.lang.Override
+  public boolean hasNats() {
+    return nats_ != null;
+  }
+  /**
+   * <code>.ncraft.messaging.Nats nats = 15;</code>
+   * @return The nats.
+   */
+  @java.lang.Override
+  public io.ncraft.ncraft.messaging.Nats getNats() {
+    return nats_ == null ? io.ncraft.ncraft.messaging.Nats.getDefaultInstance() : nats_;
+  }
+  /**
+   * <code>.ncraft.messaging.Nats nats = 15;</code>
+   */
+  @java.lang.Override
+  public io.ncraft.ncraft.messaging.NatsOrBuilder getNatsOrBuilder() {
+    return getNats();
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -295,6 +334,9 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < subscriptions_.size(); i++) {
       output.writeMessage(10, subscriptions_.get(i));
     }
+    if (nats_ != null) {
+      output.writeMessage(15, getNats());
+    }
     unknownFields.writeTo(output);
   }
 
@@ -316,6 +358,10 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < subscriptions_.size(); i++) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, subscriptions_.get(i));
+    }
+    if (nats_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(15, getNats());
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -340,6 +386,11 @@ private static final long serialVersionUID = 0L;
         .equals(other.getServiceName())) return false;
     if (!getSubscriptionsList()
         .equals(other.getSubscriptionsList())) return false;
+    if (hasNats() != other.hasNats()) return false;
+    if (hasNats()) {
+      if (!getNats()
+          .equals(other.getNats())) return false;
+    }
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -360,6 +411,10 @@ private static final long serialVersionUID = 0L;
     if (getSubscriptionsCount() > 0) {
       hash = (37 * hash) + SUBSCRIPTIONS_FIELD_NUMBER;
       hash = (53 * hash) + getSubscriptionsList().hashCode();
+    }
+    if (hasNats()) {
+      hash = (37 * hash) + NATS_FIELD_NUMBER;
+      hash = (53 * hash) + getNats().hashCode();
     }
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
@@ -507,6 +562,12 @@ private static final long serialVersionUID = 0L;
       } else {
         subscriptionsBuilder_.clear();
       }
+      if (natsBuilder_ == null) {
+        nats_ = null;
+      } else {
+        nats_ = null;
+        natsBuilder_ = null;
+      }
       return this;
     }
 
@@ -545,6 +606,11 @@ private static final long serialVersionUID = 0L;
         result.subscriptions_ = subscriptions_;
       } else {
         result.subscriptions_ = subscriptionsBuilder_.build();
+      }
+      if (natsBuilder_ == null) {
+        result.nats_ = nats_;
+      } else {
+        result.nats_ = natsBuilder_.build();
       }
       onBuilt();
       return result;
@@ -631,6 +697,9 @@ private static final long serialVersionUID = 0L;
             subscriptionsBuilder_.addAllMessages(other.subscriptions_);
           }
         }
+      }
+      if (other.hasNats()) {
+        mergeNats(other.getNats());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -1128,6 +1197,125 @@ private static final long serialVersionUID = 0L;
         subscriptions_ = null;
       }
       return subscriptionsBuilder_;
+    }
+
+    private io.ncraft.ncraft.messaging.Nats nats_;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.ncraft.ncraft.messaging.Nats, io.ncraft.ncraft.messaging.Nats.Builder, io.ncraft.ncraft.messaging.NatsOrBuilder> natsBuilder_;
+    /**
+     * <code>.ncraft.messaging.Nats nats = 15;</code>
+     * @return Whether the nats field is set.
+     */
+    public boolean hasNats() {
+      return natsBuilder_ != null || nats_ != null;
+    }
+    /**
+     * <code>.ncraft.messaging.Nats nats = 15;</code>
+     * @return The nats.
+     */
+    public io.ncraft.ncraft.messaging.Nats getNats() {
+      if (natsBuilder_ == null) {
+        return nats_ == null ? io.ncraft.ncraft.messaging.Nats.getDefaultInstance() : nats_;
+      } else {
+        return natsBuilder_.getMessage();
+      }
+    }
+    /**
+     * <code>.ncraft.messaging.Nats nats = 15;</code>
+     */
+    public Builder setNats(io.ncraft.ncraft.messaging.Nats value) {
+      if (natsBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        nats_ = value;
+        onChanged();
+      } else {
+        natsBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.ncraft.messaging.Nats nats = 15;</code>
+     */
+    public Builder setNats(
+        io.ncraft.ncraft.messaging.Nats.Builder builderForValue) {
+      if (natsBuilder_ == null) {
+        nats_ = builderForValue.build();
+        onChanged();
+      } else {
+        natsBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.ncraft.messaging.Nats nats = 15;</code>
+     */
+    public Builder mergeNats(io.ncraft.ncraft.messaging.Nats value) {
+      if (natsBuilder_ == null) {
+        if (nats_ != null) {
+          nats_ =
+            io.ncraft.ncraft.messaging.Nats.newBuilder(nats_).mergeFrom(value).buildPartial();
+        } else {
+          nats_ = value;
+        }
+        onChanged();
+      } else {
+        natsBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.ncraft.messaging.Nats nats = 15;</code>
+     */
+    public Builder clearNats() {
+      if (natsBuilder_ == null) {
+        nats_ = null;
+        onChanged();
+      } else {
+        nats_ = null;
+        natsBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.ncraft.messaging.Nats nats = 15;</code>
+     */
+    public io.ncraft.ncraft.messaging.Nats.Builder getNatsBuilder() {
+      
+      onChanged();
+      return getNatsFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.ncraft.messaging.Nats nats = 15;</code>
+     */
+    public io.ncraft.ncraft.messaging.NatsOrBuilder getNatsOrBuilder() {
+      if (natsBuilder_ != null) {
+        return natsBuilder_.getMessageOrBuilder();
+      } else {
+        return nats_ == null ?
+            io.ncraft.ncraft.messaging.Nats.getDefaultInstance() : nats_;
+      }
+    }
+    /**
+     * <code>.ncraft.messaging.Nats nats = 15;</code>
+     */
+    private com.google.protobuf.SingleFieldBuilderV3<
+        io.ncraft.ncraft.messaging.Nats, io.ncraft.ncraft.messaging.Nats.Builder, io.ncraft.ncraft.messaging.NatsOrBuilder> 
+        getNatsFieldBuilder() {
+      if (natsBuilder_ == null) {
+        natsBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            io.ncraft.ncraft.messaging.Nats, io.ncraft.ncraft.messaging.Nats.Builder, io.ncraft.ncraft.messaging.NatsOrBuilder>(
+                getNats(),
+                getParentForChildren(),
+                isClean());
+        nats_ = null;
+      }
+      return natsBuilder_;
     }
     @java.lang.Override
     public final Builder setUnknownFields(

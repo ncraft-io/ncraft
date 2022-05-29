@@ -29,18 +29,21 @@ public final class SubscriptionProto {
   static {
     java.lang.String[] descriptorData = {
       "\n#ncraft/messaging/subscription.proto\022\020n" +
-      "craft.messaging\032$ncraft/messaging/push_e" +
-      "ndpoint.proto\"~\n\014Subscription\022\014\n\004name\030\001 " +
-      "\001(\t\022\r\n\005topic\030\005 \001(\t\022\r\n\005group\030\006 \001(\t\022\020\n\010aut" +
-      "o_ack\030\t \001(\010\0220\n\010endpoint\030\n \001(\0132\036.ncraft.m" +
-      "essaging.PushEndpointBp\n\032io.ncraft.ncraf" +
-      "t.messagingB\021SubscriptionProtoP\001Z=github" +
-      ".com/ncraft-io/ncraft/go/pkg/ncraft/mess" +
-      "aging;messagingb\006proto3"
+      "craft.messaging\032\024mojo/core/time.proto\032$n" +
+      "craft/messaging/push_endpoint.proto\"\266\001\n\014" +
+      "Subscription\022\014\n\004name\030\001 \001(\t\022\r\n\005topic\030\005 \001(" +
+      "\t\022\r\n\005group\030\006 \001(\t\022\014\n\004pull\030\007 \001(\010\022\020\n\010auto_a" +
+      "ck\030\t \001(\010\022(\n\013ack_timeout\030\n \001(\0132\023.mojo.cor" +
+      "e.Duration\0220\n\010endpoint\030\017 \001(\0132\036.ncraft.me" +
+      "ssaging.PushEndpointBp\n\032io.ncraft.ncraft" +
+      ".messagingB\021SubscriptionProtoP\001Z=github." +
+      "com/ncraft-io/ncraft/go/pkg/ncraft/messa" +
+      "ging;messagingb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
+          org.mojolang.mojo.core.TimeProto.getDescriptor(),
           io.ncraft.ncraft.messaging.PushEndpointProto.getDescriptor(),
         });
     internal_static_ncraft_messaging_Subscription_descriptor =
@@ -48,7 +51,8 @@ public final class SubscriptionProto {
     internal_static_ncraft_messaging_Subscription_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ncraft_messaging_Subscription_descriptor,
-        new java.lang.String[] { "Name", "Topic", "Group", "AutoAck", "Endpoint", });
+        new java.lang.String[] { "Name", "Topic", "Group", "Pull", "AutoAck", "AckTimeout", "Endpoint", });
+    org.mojolang.mojo.core.TimeProto.getDescriptor();
     io.ncraft.ncraft.messaging.PushEndpointProto.getDescriptor();
   }
 

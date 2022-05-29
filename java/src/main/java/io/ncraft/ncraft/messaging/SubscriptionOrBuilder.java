@@ -44,23 +44,44 @@ public interface SubscriptionOrBuilder extends
       getGroupBytes();
 
   /**
+   * <code>bool pull = 7;</code>
+   * @return The pull.
+   */
+  boolean getPull();
+
+  /**
    * <code>bool auto_ack = 9;</code>
    * @return The autoAck.
    */
   boolean getAutoAck();
 
   /**
-   * <code>.ncraft.messaging.PushEndpoint endpoint = 10;</code>
+   * <code>.mojo.core.Duration ack_timeout = 10;</code>
+   * @return Whether the ackTimeout field is set.
+   */
+  boolean hasAckTimeout();
+  /**
+   * <code>.mojo.core.Duration ack_timeout = 10;</code>
+   * @return The ackTimeout.
+   */
+  org.mojolang.mojo.core.Duration getAckTimeout();
+  /**
+   * <code>.mojo.core.Duration ack_timeout = 10;</code>
+   */
+  org.mojolang.mojo.core.DurationOrBuilder getAckTimeoutOrBuilder();
+
+  /**
+   * <code>.ncraft.messaging.PushEndpoint endpoint = 15;</code>
    * @return Whether the endpoint field is set.
    */
   boolean hasEndpoint();
   /**
-   * <code>.ncraft.messaging.PushEndpoint endpoint = 10;</code>
+   * <code>.ncraft.messaging.PushEndpoint endpoint = 15;</code>
    * @return The endpoint.
    */
   io.ncraft.ncraft.messaging.PushEndpoint getEndpoint();
   /**
-   * <code>.ncraft.messaging.PushEndpoint endpoint = 10;</code>
+   * <code>.ncraft.messaging.PushEndpoint endpoint = 15;</code>
    */
   io.ncraft.ncraft.messaging.PushEndpointOrBuilder getEndpointOrBuilder();
 }

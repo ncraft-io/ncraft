@@ -4,6 +4,7 @@ syntax = "proto3";
 
 package ncraft.messaging;
 
+import "mojo/core/time.proto";
 import "ncraft/messaging/push_endpoint.proto";
 
 option go_package = "github.com/ncraft-io/ncraft/go/pkg/ncraft/messaging;messaging";
@@ -15,6 +16,8 @@ message Subscription {
     string name = 1;
     string topic = 5;
     string group = 6;
+    bool pull = 7;
     bool auto_ack = 9;
-    PushEndpoint endpoint = 10;
+    mojo.core.Duration ack_timeout = 10;
+    PushEndpoint endpoint = 15;
 }

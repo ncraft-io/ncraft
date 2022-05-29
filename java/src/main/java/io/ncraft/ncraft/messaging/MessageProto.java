@@ -37,7 +37,7 @@ public final class MessageProto {
       ".messaging\032\025mojo/core/value.proto\"\247\001\n\007Me" +
       "ssage\022\n\n\002id\030\001 \001(\t\022=\n\nattributes\030\002 \003(\0132)." +
       "ncraft.messaging.Message.AttributesEntry" +
-      "\022\014\n\004data\030\003 \001(\014\032C\n\017AttributesEntry\022\013\n\003key" +
+      "\022\014\n\004data\030\003 \001(\t\032C\n\017AttributesEntry\022\013\n\003key" +
       "\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.mojo.core.Value:" +
       "\0028\001Bk\n\032io.ncraft.ncraft.messagingB\014Messa" +
       "geProtoP\001Z=github.com/ncraft-io/ncraft/g" +

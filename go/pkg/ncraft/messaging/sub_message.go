@@ -1,12 +1,17 @@
 package messaging
 
-import "github.com/mojo-lang/core/go/pkg/mojo/core"
+import (
+    "github.com/mojo-lang/core/go/pkg/mojo/core"
+)
 
 type SubMessage struct {
     Message
 
-    didAck bool
-    ack    func()
+    didAck     bool
+    ack        func()
+    nck        func()
+    term       func()
+    inProgress func()
 }
 
 func NewMessage(data interface{}, attributes ...string) *SubMessage {
@@ -24,10 +29,51 @@ func (m *SubMessage) SetAck(ack func()) *SubMessage {
     return m
 }
 
+func (m *SubMessage) SetNak(nak func()) *SubMessage {
+    if m != nil {
+        m.nck = nak
+    }
+    return m
+}
+
+func (m *SubMessage) SetTerm(term func()) *SubMessage {
+    if m != nil {
+        m.term = term
+    }
+    return m
+}
+
+func (m *SubMessage) SetInProgress(inProgress func()) *SubMessage {
+    if m != nil {
+        m.inProgress = inProgress
+    }
+    return m
+}
+
 func (m *SubMessage) Ack() {
-    if m != nil && !m.didAck {
+    if m != nil && !m.didAck && m.ack != nil {
         m.ack()
         m.didAck = true
+    }
+}
+
+func (m *SubMessage) Nak() {
+    if m != nil && !m.didAck && m.nck != nil {
+        m.nck()
+        m.didAck = true
+    }
+}
+
+func (m *SubMessage) Term() {
+    if m != nil && !m.didAck && m.term != nil {
+        m.term()
+        m.didAck = true
+    }
+}
+
+func (m *SubMessage) InProgress() {
+    if m != nil && m.inProgress != nil {
+        m.inProgress()
     }
 }
 

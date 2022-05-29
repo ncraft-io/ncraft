@@ -7,4 +7,11 @@ type Config {
     service_name: String @3
 
     subscriptions: [Subscription] @10
+
+    nats: Nats @15
+}
+
+type Nats {
+    jet_stream: String @1
+    topic_names: [String] @2
 }

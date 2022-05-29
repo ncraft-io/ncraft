@@ -1,7 +1,6 @@
 package json
 
 import (
-    "encoding/json"
     "fmt"
     "github.com/fatih/structs"
     reader2 "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/reader"
@@ -12,6 +11,7 @@ import (
     "time"
 
     simple "github.com/bitly/go-simplejson"
+    jsoniter "github.com/json-iterator/go"
 )
 
 type jsonValues struct {
@@ -73,7 +73,7 @@ func (j *jsonValues) Scan(v interface{}) error {
     if err != nil {
         return err
     }
-    return json.Unmarshal(b, v)
+    return jsoniter.Unmarshal(b, v)
 }
 
 func (j *jsonValues) String() string {
@@ -213,7 +213,7 @@ func (j *jsonValue) Scan(v interface{}) error {
         // 	}
         // }
     }
-    return json.Unmarshal(b, v)
+    return jsoniter.Unmarshal(b, v)
 }
 
 func (j *jsonValue) Bytes() []byte {

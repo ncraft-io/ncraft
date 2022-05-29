@@ -7,6 +7,9 @@
             "title": "mojo.core.String",
             "type": "string"
         },
+        "nats": {
+            "$ref": "#/components/schemas/ncraft.messaging.Nats"
+        },
         "provider": {
             "title": "mojo.core.String",
             "type": "string"

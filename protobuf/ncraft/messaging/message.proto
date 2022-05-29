@@ -14,5 +14,5 @@ option java_package = "io.ncraft.ncraft.messaging";
 message Message {
     string id = 1;
     map<string, mojo.core.Value> attributes = 2;
-    bytes data = 3;
+    string data = 3;
 }

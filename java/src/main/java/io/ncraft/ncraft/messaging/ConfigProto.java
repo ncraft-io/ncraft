@@ -19,6 +19,11 @@ public final class ConfigProto {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ncraft_messaging_Config_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ncraft_messaging_Nats_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ncraft_messaging_Nats_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -30,13 +35,15 @@ public final class ConfigProto {
     java.lang.String[] descriptorData = {
       "\n\035ncraft/messaging/config.proto\022\020ncraft." +
       "messaging\032#ncraft/messaging/subscription" +
-      ".proto\"w\n\006Config\022\020\n\010provider\030\001 \001(\t\022\016\n\006br" +
-      "oker\030\002 \001(\t\022\024\n\014service_name\030\003 \001(\t\0225\n\rsubs" +
-      "criptions\030\n \003(\0132\036.ncraft.messaging.Subsc" +
-      "riptionBj\n\032io.ncraft.ncraft.messagingB\013C" +
-      "onfigProtoP\001Z=github.com/ncraft-io/ncraf" +
-      "t/go/pkg/ncraft/messaging;messagingb\006pro" +
-      "to3"
+      ".proto\"\235\001\n\006Config\022\020\n\010provider\030\001 \001(\t\022\016\n\006b" +
+      "roker\030\002 \001(\t\022\024\n\014service_name\030\003 \001(\t\0225\n\rsub" +
+      "scriptions\030\n \003(\0132\036.ncraft.messaging.Subs" +
+      "cription\022$\n\004nats\030\017 \001(\0132\026.ncraft.messagin" +
+      "g.Nats\"/\n\004Nats\022\022\n\njet_stream\030\001 \001(\t\022\023\n\013to" +
+      "pic_names\030\002 \003(\tBj\n\032io.ncraft.ncraft.mess" +
+      "agingB\013ConfigProtoP\001Z=github.com/ncraft-" +
+      "io/ncraft/go/pkg/ncraft/messaging;messag" +
+      "ingb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -48,7 +55,13 @@ public final class ConfigProto {
     internal_static_ncraft_messaging_Config_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ncraft_messaging_Config_descriptor,
-        new java.lang.String[] { "Provider", "Broker", "ServiceName", "Subscriptions", });
+        new java.lang.String[] { "Provider", "Broker", "ServiceName", "Subscriptions", "Nats", });
+    internal_static_ncraft_messaging_Nats_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_ncraft_messaging_Nats_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ncraft_messaging_Nats_descriptor,
+        new java.lang.String[] { "JetStream", "TopicNames", });
     io.ncraft.ncraft.messaging.SubscriptionProto.getDescriptor();
   }
 

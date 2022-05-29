@@ -66,4 +66,19 @@ public interface ConfigOrBuilder extends
    */
   io.ncraft.ncraft.messaging.SubscriptionOrBuilder getSubscriptionsOrBuilder(
       int index);
+
+  /**
+   * <code>.ncraft.messaging.Nats nats = 15;</code>
+   * @return Whether the nats field is set.
+   */
+  boolean hasNats();
+  /**
+   * <code>.ncraft.messaging.Nats nats = 15;</code>
+   * @return The nats.
+   */
+  io.ncraft.ncraft.messaging.Nats getNats();
+  /**
+   * <code>.ncraft.messaging.Nats nats = 15;</code>
+   */
+  io.ncraft.ncraft.messaging.NatsOrBuilder getNatsOrBuilder();
 }

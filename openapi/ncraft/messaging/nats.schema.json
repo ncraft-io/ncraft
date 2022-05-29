@@ -1,0 +1,19 @@
+{
+    "title": "ncraft.messaging.Nats",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "jetStream": {
+            "title": "mojo.core.String",
+            "type": "string"
+        },
+        "topicNames": {
+            "title": "mojo.core.Array",
+            "type": "array",
+            "items": {
+                "title": "mojo.core.String",
+                "type": "string"
+            }
+        }
+    }
+}

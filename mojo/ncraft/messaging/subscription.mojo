@@ -5,7 +5,10 @@ type Subscription {
     topic: String @5
     group: String @6
 
-    auto_ack: Bool @9
+    pull: Bool @7
 
-    endpoint: PushEndpoint @10
+    auto_ack: Bool @9
+    ack_timeout: Duration @10
+
+    endpoint: PushEndpoint @15
 }

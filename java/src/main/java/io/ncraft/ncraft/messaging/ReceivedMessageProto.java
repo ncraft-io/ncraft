@@ -39,7 +39,7 @@ public final class ReceivedMessageProto {
       "ng/message.proto\"\211\002\n\017ReceivedMessage\022\n\n\002" +
       "id\030\001 \001(\t\022E\n\nattributes\030\002 \003(\01321.ncraft.me" +
       "ssaging.ReceivedMessage.AttributesEntry\022" +
-      "\014\n\004data\030\003 \001(\014\022\016\n\006ack_id\030\013 \001(\t\022\024\n\014subscri" +
+      "\014\n\004data\030\003 \001(\t\022\016\n\006ack_id\030\013 \001(\t\022\024\n\014subscri" +
       "ption\030\014 \001(\t\022*\n\014publish_time\030\r \001(\0132\024.mojo" +
       ".core.Timestamp\032C\n\017AttributesEntry\022\013\n\003ke" +
       "y\030\001 \001(\t\022\037\n\005value\030\002 \001(\0132\020.mojo.core.Value" +

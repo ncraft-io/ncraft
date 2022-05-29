@@ -17,7 +17,7 @@ private static final long serialVersionUID = 0L;
   }
   private ReceivedMessage() {
     id_ = "";
-    data_ = com.google.protobuf.ByteString.EMPTY;
+    data_ = "";
     ackId_ = "";
     subscription_ = "";
   }
@@ -73,8 +73,9 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 26: {
+            java.lang.String s = input.readStringRequireUtf8();
 
-            data_ = input.readBytes();
+            data_ = s;
             break;
           }
           case 90: {
@@ -266,14 +267,41 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int DATA_FIELD_NUMBER = 3;
-  private com.google.protobuf.ByteString data_;
+  private volatile java.lang.Object data_;
   /**
-   * <code>bytes data = 3;</code>
+   * <code>string data = 3;</code>
    * @return The data.
    */
   @java.lang.Override
-  public com.google.protobuf.ByteString getData() {
-    return data_;
+  public java.lang.String getData() {
+    java.lang.Object ref = data_;
+    if (ref instanceof java.lang.String) {
+      return (java.lang.String) ref;
+    } else {
+      com.google.protobuf.ByteString bs = 
+          (com.google.protobuf.ByteString) ref;
+      java.lang.String s = bs.toStringUtf8();
+      data_ = s;
+      return s;
+    }
+  }
+  /**
+   * <code>string data = 3;</code>
+   * @return The bytes for data.
+   */
+  @java.lang.Override
+  public com.google.protobuf.ByteString
+      getDataBytes() {
+    java.lang.Object ref = data_;
+    if (ref instanceof java.lang.String) {
+      com.google.protobuf.ByteString b = 
+          com.google.protobuf.ByteString.copyFromUtf8(
+              (java.lang.String) ref);
+      data_ = b;
+      return b;
+    } else {
+      return (com.google.protobuf.ByteString) ref;
+    }
   }
 
   public static final int ACK_ID_FIELD_NUMBER = 11;
@@ -401,8 +429,8 @@ private static final long serialVersionUID = 0L;
         internalGetAttributes(),
         AttributesDefaultEntryHolder.defaultEntry,
         2);
-    if (!data_.isEmpty()) {
-      output.writeBytes(3, data_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(data_)) {
+      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, data_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ackId_)) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 11, ackId_);
@@ -435,9 +463,8 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, attributes__);
     }
-    if (!data_.isEmpty()) {
-      size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(3, data_);
+    if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(data_)) {
+      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, data_);
     }
     if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(ackId_)) {
       size += com.google.protobuf.GeneratedMessageV3.computeStringSize(11, ackId_);
@@ -664,7 +691,7 @@ private static final long serialVersionUID = 0L;
       id_ = "";
 
       internalGetMutableAttributes().clear();
-      data_ = com.google.protobuf.ByteString.EMPTY;
+      data_ = "";
 
       ackId_ = "";
 
@@ -768,8 +795,9 @@ private static final long serialVersionUID = 0L;
       }
       internalGetMutableAttributes().mergeFrom(
           other.internalGetAttributes());
-      if (other.getData() != com.google.protobuf.ByteString.EMPTY) {
-        setData(other.getData());
+      if (!other.getData().isEmpty()) {
+        data_ = other.data_;
+        onChanged();
       }
       if (!other.getAckId().isEmpty()) {
         ackId_ = other.ackId_;
@@ -1019,21 +1047,47 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
+    private java.lang.Object data_ = "";
     /**
-     * <code>bytes data = 3;</code>
+     * <code>string data = 3;</code>
      * @return The data.
      */
-    @java.lang.Override
-    public com.google.protobuf.ByteString getData() {
-      return data_;
+    public java.lang.String getData() {
+      java.lang.Object ref = data_;
+      if (!(ref instanceof java.lang.String)) {
+        com.google.protobuf.ByteString bs =
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        data_ = s;
+        return s;
+      } else {
+        return (java.lang.String) ref;
+      }
     }
     /**
-     * <code>bytes data = 3;</code>
+     * <code>string data = 3;</code>
+     * @return The bytes for data.
+     */
+    public com.google.protobuf.ByteString
+        getDataBytes() {
+      java.lang.Object ref = data_;
+      if (ref instanceof String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        data_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+    /**
+     * <code>string data = 3;</code>
      * @param value The data to set.
      * @return This builder for chaining.
      */
-    public Builder setData(com.google.protobuf.ByteString value) {
+    public Builder setData(
+        java.lang.String value) {
       if (value == null) {
     throw new NullPointerException();
   }
@@ -1043,12 +1097,28 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>bytes data = 3;</code>
+     * <code>string data = 3;</code>
      * @return This builder for chaining.
      */
     public Builder clearData() {
       
       data_ = getDefaultInstance().getData();
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>string data = 3;</code>
+     * @param value The bytes for data to set.
+     * @return This builder for chaining.
+     */
+    public Builder setDataBytes(
+        com.google.protobuf.ByteString value) {
+      if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+      
+      data_ = value;
       onChanged();
       return this;
     }

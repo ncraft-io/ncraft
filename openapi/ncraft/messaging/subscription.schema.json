@@ -3,6 +3,9 @@
     "description": "",
     "type": "object",
     "properties": {
+        "ackTimeout": {
+            "$ref": "#/components/schemas/mojo.core.Duration"
+        },
         "autoAck": {
             "title": "mojo.core.Bool",
             "type": "boolean"
@@ -17,6 +20,10 @@
         "name": {
             "title": "mojo.core.String",
             "type": "string"
+        },
+        "pull": {
+            "title": "mojo.core.Bool",
+            "type": "boolean"
         },
         "topic": {
             "title": "mojo.core.String",

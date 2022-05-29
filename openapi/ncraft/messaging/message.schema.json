@@ -11,9 +11,8 @@
             }
         },
         "data": {
-            "title": "mojo.core.Bytes",
-            "type": "string",
-            "format": "Bytes"
+            "title": "mojo.core.String",
+            "type": "string"
         },
         "id": {
             "title": "mojo.core.String",
