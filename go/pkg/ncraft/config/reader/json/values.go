@@ -186,9 +186,6 @@ func (j *jsonValue) Scan(v interface{}) error {
     if err != nil {
         return err
     }
-    if string(b) == "null" {
-        return nil
-    }
 
     if structs.IsStruct(v) {
         d := &tag.Loader{}
@@ -213,6 +210,11 @@ func (j *jsonValue) Scan(v interface{}) error {
         // 	}
         // }
     }
+
+    if string(b) == "null" {
+        return nil
+    }
+
     return jsoniter.Unmarshal(b, v)
 }
 

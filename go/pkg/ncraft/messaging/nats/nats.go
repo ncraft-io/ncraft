@@ -18,6 +18,7 @@ func init() {
 }
 
 type Msg = nats.Msg
+type Subscription = nats.Subscription
 
 var ErrConnectionClosed = nats.ErrConnectionClosed
 var ErrTimeout = nats.ErrTimeout
