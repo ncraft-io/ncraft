@@ -68,6 +68,9 @@ func (m *Minio) Read(key string, options core.Options) (*storage.Object, error) 
                 key = key[pos:]
             }
             if obj, err = m.client.GetObject(bucketName, key, minio.GetObjectOptions{}); err != nil {
+                if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" {
+                    return nil, core.NewNotFoundError("failed to found the key %s", key)
+                }
                 return nil, err
             }
         }
