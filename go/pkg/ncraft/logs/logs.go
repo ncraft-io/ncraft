@@ -83,6 +83,14 @@ func New(cfg *Config) *ZapLogger {
     return newZap(cfg)
 }
 
+func LevelEnabled(level Level) bool {
+    return defaultLevel.Enabled(level)
+}
+
+func With(args ...interface{}) *ZapLogger {
+    return defaultLog.With(args...)
+}
+
 func SetLevel(level string) {
     l := strings.ToLower(level)
     if l == "info" {
