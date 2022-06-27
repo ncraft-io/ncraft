@@ -61,6 +61,10 @@ func Read(key string, options core.Options) (*Object, error) {
     return GetStorage().Read(key, options)
 }
 
+func Write(object *Object, options core.Options) error {
+    return GetStorage().Write(object, options)
+}
+
 func Download(key string, path string, options core.Options) error {
     return GetStorage().Download(key, path, options)
 }

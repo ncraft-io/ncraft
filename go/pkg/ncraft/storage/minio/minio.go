@@ -1,6 +1,7 @@
 package minio
 
 import (
+    "bytes"
     "fmt"
     "github.com/minio/minio-go"
     "github.com/mojo-lang/core/go/pkg/mojo/core"
@@ -100,7 +101,8 @@ func (m *Minio) Read(key string, options core.Options) (*storage.Object, error) 
 }
 
 func (m *Minio) Write(object *storage.Object, options core.Options) error {
-    return nil
+    _, err := m.client.PutObject(m.bucketName, object.Key, bytes.NewReader(object.Content), object.Size, minio.PutObjectOptions{})
+    return err
 }
 
 func (m *Minio) Download(key string, path string, options core.Options) error {
