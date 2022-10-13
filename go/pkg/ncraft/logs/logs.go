@@ -15,7 +15,7 @@ import (
     _ "unsafe"
 )
 
-//go:linkname gopanic runtime.gopanic
+///go:linkname gopanic runtime.gopanic
 //func gopanic(a interface{})
 
 //type handler func(a interface{}, stack []byte)
