@@ -20,19 +20,19 @@ require (
 	github.com/imdario/mergo v0.3.12
 	github.com/json-iterator/go v1.1.12
 	github.com/minio/minio-go v6.0.14+incompatible
-	github.com/mojo-lang/core/go v0.0.0-20220823095708-59755e437283
-	github.com/mojo-lang/http/go v0.0.0-20220608061734-3095242c1a5f
-	github.com/mojo-lang/lang/go v0.0.0-20220516003303-71c9d23d7e38 // indirect
+	github.com/mojo-lang/core/go v0.0.0-20220929135212-3562b42bfff9
+	github.com/mojo-lang/http/go v0.0.0-20220906034927-0649e718e656
+	github.com/mojo-lang/lang/go v0.0.0-20220930060821-573ad32d5144 // indirect
 	github.com/nats-io/nats-server/v2 v2.8.1 // indirect
 	github.com/nats-io/nats.go v1.14.0
 	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0 // indirect
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.8.0
 	go.etcd.io/bbolt v1.3.6
-	go.uber.org/zap v1.21.0
+	go.uber.org/zap v1.23.0
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
 	golang.org/x/sys v0.0.0-20220422013727-9388b58f7150 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
-	google.golang.org/protobuf v1.28.0
+	google.golang.org/protobuf v1.28.1
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 )

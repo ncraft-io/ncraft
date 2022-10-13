@@ -1,6 +1,7 @@
 package storage
 
 import (
+    "context"
     "fmt"
     "github.com/mojo-lang/http/go/pkg/mojo/http"
     gohttp "net/http"
@@ -11,6 +12,9 @@ func (x *Object) GetHttpHeaders() *http.Headers {
         headers := http.NewHeaders()
         if x.ContentType != nil {
             headers.Set("Content-Type", x.ContentType.Format())
+            if x.ContentType.Subtype == "zip" {
+                headers.Set("Content-Encoding", "gzip")
+            }
         }
         if len(x.Etag) > 0 {
             headers.Set("ETag", x.Etag)
@@ -20,7 +24,8 @@ func (x *Object) GetHttpHeaders() *http.Headers {
     return nil
 }
 
-func (x *Object) WriteHttpResponse(writer gohttp.ResponseWriter) error {
+func (x *Object) WriteHttpResponse(ctx context.Context, writer gohttp.ResponseWriter) error {
+    _ = ctx
     if x != nil {
         x.GetHttpHeaders().SyncTo(writer.Header())
         if count, err := writer.Write(x.Content); err != nil {
