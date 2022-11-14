@@ -228,7 +228,6 @@ func newZap(cfg *Config) *ZapLogger {
     var opts []zap.Option
     opts = append(opts, zap.Development())
     opts = append(opts, zap.AddCaller())
-    opts = append(opts, zap.AddCallerSkip(1))
     opts = append(opts, zap.AddStacktrace(zap.ErrorLevel))
 
     defaultLevel = zap.NewAtomicLevel()
