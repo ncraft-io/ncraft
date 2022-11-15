@@ -79,6 +79,10 @@ func (m *Minio) Read(key string, options core.Options) (*storage.Object, error) 
 
     info, err := obj.Stat()
     if err != nil {
+        errResponse := &minio.ErrorResponse{}
+        if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" {
+            return nil, core.NewNotFoundError("failed to found the key %s", key)
+        }
         return nil, err
     }
     object := &storage.Object{
