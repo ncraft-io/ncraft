@@ -20,9 +20,9 @@ require (
 	github.com/imdario/mergo v0.3.12
 	github.com/json-iterator/go v1.1.12
 	github.com/minio/minio-go v6.0.14+incompatible
-	github.com/mojo-lang/core/go v0.0.0-20220929135212-3562b42bfff9
-	github.com/mojo-lang/http/go v0.0.0-20220906034927-0649e718e656
-	github.com/mojo-lang/lang/go v0.0.0-20220930060821-573ad32d5144 // indirect
+	github.com/mojo-lang/core/go v0.0.0-20221219004943-fa9d45a5355d
+	github.com/mojo-lang/http/go v0.0.0-20221207083739-991b236fb781
+	github.com/mojo-lang/lang/go v0.0.0-20221104073626-339ac5bda868 // indirect
 	github.com/nats-io/nats-server/v2 v2.8.1 // indirect
 	github.com/nats-io/nats.go v1.14.0
 	github.com/pkg/errors v0.9.1

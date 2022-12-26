@@ -1,301 +1,302 @@
 package config
 
 import (
-    "bytes"
-    "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/loader"
-    memory2 "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/loader/memory"
-    "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/reader"
-    "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/reader/json"
-    "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
-    "sync"
-    "time"
+	"bytes"
+	"sync"
+	"time"
+
+	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config/loader"
+	memory2 "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/loader/memory"
+	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config/reader"
+	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config/reader/json"
+	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
 )
 
 type config struct {
-    exit chan bool
-    opts Options
+	exit chan bool
+	opts Options
 
-    sync.RWMutex
-    // the current snapshot
-    snap *loader.Snapshot
-    // the current values
-    vals reader.Values
+	sync.RWMutex
+	// the current snapshot
+	snap *loader.Snapshot
+	// the current values
+	vals reader.Values
 }
 
 type watcher struct {
-    lw    loader.Watcher
-    rd    reader.Reader
-    path  []string
-    value reader.Value
+	lw    loader.Watcher
+	rd    reader.Reader
+	path  []string
+	value reader.Value
 }
 
 func newConfig(opts ...Option) (Config, error) {
-    var c config
+	var c config
 
-    err := c.Init(opts...)
-    if err != nil {
-        return nil, err
-    }
-    go c.run()
+	err := c.Init(opts...)
+	if err != nil {
+		return nil, err
+	}
+	go c.run()
 
-    return &c, nil
+	return &c, nil
 }
 
 func (c *config) Init(opts ...Option) error {
-    c.opts = Options{
-        Reader: json.NewReader(),
-    }
-    c.exit = make(chan bool)
-    for _, o := range opts {
-        o(&c.opts)
-    }
+	c.opts = Options{
+		Reader: json.NewReader(),
+	}
+	c.exit = make(chan bool)
+	for _, o := range opts {
+		o(&c.opts)
+	}
 
-    // default loader uses the configured reader
-    if c.opts.Loader == nil {
-        c.opts.Loader = memory2.NewLoader(memory2.WithReader(c.opts.Reader))
-    }
+	// default loader uses the configured reader
+	if c.opts.Loader == nil {
+		c.opts.Loader = memory2.NewLoader(memory2.WithReader(c.opts.Reader))
+	}
 
-    err := c.opts.Loader.Load(c.opts.Source...)
-    if err != nil {
-        return err
-    }
+	err := c.opts.Loader.Load(c.opts.Source...)
+	if err != nil {
+		return err
+	}
 
-    c.snap, err = c.opts.Loader.Snapshot()
-    if err != nil {
-        return err
-    }
+	c.snap, err = c.opts.Loader.Snapshot()
+	if err != nil {
+		return err
+	}
 
-    c.vals, err = c.opts.Reader.Values(c.snap.ChangeSet)
-    if err != nil {
-        return err
-    }
+	c.vals, err = c.opts.Reader.Values(c.snap.ChangeSet)
+	if err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
 func (c *config) Options() Options {
-    return c.opts
+	return c.opts
 }
 
 func (c *config) run() {
-    watch := func(w loader.Watcher) error {
-        for {
-            // get changeset
-            snap, err := w.Next()
-            if err != nil {
-                return err
-            }
+	watch := func(w loader.Watcher) error {
+		for {
+			// get change-set
+			snap, err := w.Next()
+			if err != nil {
+				return err
+			}
 
-            c.Lock()
+			c.Lock()
 
-            if c.snap.Version >= snap.Version {
-                c.Unlock()
-                continue
-            }
+			if c.snap.Version >= snap.Version {
+				c.Unlock()
+				continue
+			}
 
-            // save
-            c.snap = snap
+			// save
+			c.snap = snap
 
-            // set values
-            c.vals, _ = c.opts.Reader.Values(snap.ChangeSet)
+			// set values
+			c.vals, _ = c.opts.Reader.Values(snap.ChangeSet)
 
-            c.Unlock()
-        }
-    }
+			c.Unlock()
+		}
+	}
 
-    for {
-        w, err := c.opts.Loader.Watch()
-        if err != nil {
-            time.Sleep(time.Second)
-            continue
-        }
+	for {
+		w, err := c.opts.Loader.Watch()
+		if err != nil {
+			time.Sleep(time.Second)
+			continue
+		}
 
-        done := make(chan bool)
+		done := make(chan bool)
 
-        // the stop watch func
-        go func() {
-            select {
-            case <-done:
-            case <-c.exit:
-            }
-            w.Stop()
-        }()
+		// the stop watch func
+		go func() {
+			select {
+			case <-done:
+			case <-c.exit:
+			}
+			_ = w.Stop()
+		}()
 
-        // block watch
-        if err := watch(w); err != nil {
-            // do something better
-            time.Sleep(time.Second)
-        }
+		// block watch
+		if err := watch(w); err != nil {
+			// do something better
+			time.Sleep(time.Second)
+		}
 
-        // close done chan
-        close(done)
+		// close done chan
+		close(done)
 
-        // if the config is closed exit
-        select {
-        case <-c.exit:
-            return
-        default:
-        }
-    }
+		// if the config is closed exit
+		select {
+		case <-c.exit:
+			return
+		default:
+		}
+	}
 }
 
 func (c *config) Map() map[string]interface{} {
-    c.RLock()
-    defer c.RUnlock()
-    return c.vals.Map()
+	c.RLock()
+	defer c.RUnlock()
+	return c.vals.Map()
 }
 
 func (c *config) Scan(v interface{}) error {
-    c.RLock()
-    defer c.RUnlock()
-    return c.vals.Scan(v)
+	c.RLock()
+	defer c.RUnlock()
+	return c.vals.Scan(v)
 }
 
-// sync loads all the sources, calls the parser and updates the config
+// Sync loads all the sources, calls the parser and updates the config
 func (c *config) Sync() error {
-    if err := c.opts.Loader.Sync(); err != nil {
-        return err
-    }
+	if err := c.opts.Loader.Sync(); err != nil {
+		return err
+	}
 
-    snap, err := c.opts.Loader.Snapshot()
-    if err != nil {
-        return err
-    }
+	snap, err := c.opts.Loader.Snapshot()
+	if err != nil {
+		return err
+	}
 
-    c.Lock()
-    defer c.Unlock()
+	c.Lock()
+	defer c.Unlock()
 
-    c.snap = snap
-    vals, err := c.opts.Reader.Values(snap.ChangeSet)
-    if err != nil {
-        return err
-    }
-    c.vals = vals
+	c.snap = snap
+	vals, err := c.opts.Reader.Values(snap.ChangeSet)
+	if err != nil {
+		return err
+	}
+	c.vals = vals
 
-    return nil
+	return nil
 }
 
 func (c *config) Close() error {
-    select {
-    case <-c.exit:
-        return nil
-    default:
-        close(c.exit)
-    }
-    return nil
+	select {
+	case <-c.exit:
+		return nil
+	default:
+		close(c.exit)
+	}
+	return nil
 }
 
 func (c *config) Get(path ...string) reader.Value {
-    c.RLock()
-    defer c.RUnlock()
+	c.RLock()
+	defer c.RUnlock()
 
-    // did sync actually work?
-    if c.vals != nil {
-        return c.vals.Get(path...)
-    }
+	// did sync actually work?
+	if c.vals != nil {
+		return c.vals.Get(path...)
+	}
 
-    // no value
-    return newValue()
+	// no value
+	return newValue()
 }
 
 func (c *config) Set(val interface{}, path ...string) {
-    c.Lock()
-    defer c.Unlock()
+	c.Lock()
+	defer c.Unlock()
 
-    if c.vals != nil {
-        c.vals.Set(val, path...)
-    }
+	if c.vals != nil {
+		c.vals.Set(val, path...)
+	}
 
-    return
+	return
 }
 
 func (c *config) Del(path ...string) {
-    c.Lock()
-    defer c.Unlock()
+	c.Lock()
+	defer c.Unlock()
 
-    if c.vals != nil {
-        c.vals.Del(path...)
-    }
+	if c.vals != nil {
+		c.vals.Del(path...)
+	}
 
-    return
+	return
 }
 
 func (c *config) Bytes() []byte {
-    c.RLock()
-    defer c.RUnlock()
+	c.RLock()
+	defer c.RUnlock()
 
-    if c.vals == nil {
-        return []byte{}
-    }
+	if c.vals == nil {
+		return []byte{}
+	}
 
-    return c.vals.Bytes()
+	return c.vals.Bytes()
 }
 
 func (c *config) Load(sources ...source.Source) error {
-    if err := c.opts.Loader.Load(sources...); err != nil {
-        return err
-    }
+	if err := c.opts.Loader.Load(sources...); err != nil {
+		return err
+	}
 
-    snap, err := c.opts.Loader.Snapshot()
-    if err != nil {
-        return err
-    }
+	snap, err := c.opts.Loader.Snapshot()
+	if err != nil {
+		return err
+	}
 
-    c.Lock()
-    defer c.Unlock()
+	c.Lock()
+	defer c.Unlock()
 
-    c.snap = snap
-    vals, err := c.opts.Reader.Values(snap.ChangeSet)
-    if err != nil {
-        return err
-    }
-    c.vals = vals
+	c.snap = snap
+	vals, err := c.opts.Reader.Values(snap.ChangeSet)
+	if err != nil {
+		return err
+	}
+	c.vals = vals
 
-    return nil
+	return nil
 }
 
 func (c *config) Watch(path ...string) (Watcher, error) {
-    value := c.Get(path...)
+	value := c.Get(path...)
 
-    w, err := c.opts.Loader.Watch(path...)
-    if err != nil {
-        return nil, err
-    }
+	w, err := c.opts.Loader.Watch(path...)
+	if err != nil {
+		return nil, err
+	}
 
-    return &watcher{
-        lw:    w,
-        rd:    c.opts.Reader,
-        path:  path,
-        value: value,
-    }, nil
+	return &watcher{
+		lw:    w,
+		rd:    c.opts.Reader,
+		path:  path,
+		value: value,
+	}, nil
 }
 
 func (c *config) String() string {
-    return "config"
+	return "config"
 }
 
 func (w *watcher) Next() (reader.Value, error) {
-    for {
-        s, err := w.lw.Next()
-        if err != nil {
-            return nil, err
-        }
+	for {
+		s, err := w.lw.Next()
+		if err != nil {
+			return nil, err
+		}
 
-        // only process changes
-        if bytes.Equal(w.value.Bytes(), s.ChangeSet.Data) {
-            continue
-        }
+		// only process changes
+		if bytes.Equal(w.value.Bytes(), s.ChangeSet.Data) {
+			continue
+		}
 
-        v, err := w.rd.Values(s.ChangeSet)
-        if err != nil {
-            return nil, err
-        }
+		v, err := w.rd.Values(s.ChangeSet)
+		if err != nil {
+			return nil, err
+		}
 
-        w.value = v.Get()
-        return w.value, nil
-    }
+		w.value = v.Get()
+		return w.value, nil
+	}
 }
 
 func (w *watcher) Stop() error {
-    return w.lw.Stop()
+	return w.lw.Stop()
 }
