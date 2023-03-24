@@ -268,6 +268,8 @@ func (n *Nats) pullSubscribe(opts *messaging.Subscription, cb nats.MsgHandler) (
         return nil, err
     }
 
+    subs.SetPendingLimits(1000, 5*1024*1024)
+
     go func(opts *messaging.Subscription, durableName string) {
         logs.Infof("abfuzz.AgentServer subscribed the %s topic", opts.Topic)
         for {
