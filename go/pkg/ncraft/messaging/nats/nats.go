@@ -223,7 +223,12 @@ func (n *Nats) queueSubscribe(opts *messaging.Subscription, cb nats.MsgHandler) 
         if opts.Pull {
             return n.pullSubscribe(opts, cb)
         } else {
-            return n.js.QueueSubscribe(opts.Topic, opts.Group, cb)
+            sub, err := n.js.QueueSubscribe(opts.Topic, opts.Group, cb)
+            if err != nil {
+                return nil ,err
+            }
+            sub.SetPendingLimits(-1,-1)
+            return sub, nil
         }
     } else {
         return n.conn.QueueSubscribe(opts.Topic, opts.Group, cb)
@@ -267,8 +272,6 @@ func (n *Nats) pullSubscribe(opts *messaging.Subscription, cb nats.MsgHandler) (
         logs.Warnw("failed to pull subscribe the topic", "topic", opts.Topic, "error", err.Error())
         return nil, err
     }
-
-    subs.SetPendingLimits(1000, 5*1024*1024)
 
     go func(opts *messaging.Subscription, durableName string) {
         logs.Infof("abfuzz.AgentServer subscribed the %s topic", opts.Topic)
