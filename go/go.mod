@@ -17,8 +17,8 @@ require (
 	github.com/imdario/mergo v0.3.12
 	github.com/json-iterator/go v1.1.12
 	github.com/minio/minio-go v6.0.14+incompatible
-	github.com/mojo-lang/core/go v0.0.0-20230427070306-34ab6ed73f1c
-	github.com/mojo-lang/http/go v0.0.0-20230427071139-99e50de8480a
+	github.com/mojo-lang/core/go v0.0.0-20230427095043-961105c650c8
+	github.com/mojo-lang/http/go v0.0.0-20230427095618-4ac8e30ae2b4
 	github.com/nats-io/nats.go v1.14.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.0
@@ -52,8 +52,8 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/mojo-lang/document/go v0.0.0-20230427070517-a007d4b8d5e5 // indirect
-	github.com/mojo-lang/lang/go v0.0.0-20230427071021-4d8911209d5a // indirect
+	github.com/mojo-lang/document/go v0.0.0-20230427095224-881190052073 // indirect
+	github.com/mojo-lang/lang/go v0.0.0-20230427095418-142f6e7329e6 // indirect
 	github.com/nats-io/nats-server/v2 v2.8.1 // indirect
 	github.com/nats-io/nkeys v0.3.0 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
@@ -69,5 +69,5 @@ require (
 	golang.org/x/time v0.3.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	gorm.io/gorm v1.23.8 // indirect
+	gorm.io/gorm v1.25.0 // indirect
 )
