@@ -4,12 +4,14 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"path"
 	"strings"
 	_ "unsafe"
 
+	jsoniter "github.com/json-iterator/go"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -17,7 +19,7 @@ import (
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config"
 )
 
-// /go:linkname gopanic runtime.gopanic
+// //go:linkname gopanic runtime.gopanic
 // func gopanic(a interface{})
 
 // type handler func(a interface{}, stack []byte)
@@ -103,17 +105,18 @@ func SetLevel(level Level) {
 
 func initWithConsole(encode string) zapcore.Core {
 	encodeConfig := zapcore.EncoderConfig{
-		TimeKey:        "time",
-		LevelKey:       "level",
-		NameKey:        "logger",
-		CallerKey:      "caller",
-		MessageKey:     "message",
-		StacktraceKey:  "stacktrace",
-		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.LowercaseLevelEncoder,
-		EncodeTime:     zapcore.ISO8601TimeEncoder,
-		EncodeDuration: zapcore.SecondsDurationEncoder,
-		EncodeCaller:   zapcore.ShortCallerEncoder,
+		TimeKey:             "time",
+		LevelKey:            "level",
+		NameKey:             "logger",
+		CallerKey:           "caller",
+		MessageKey:          "message",
+		StacktraceKey:       "stacktrace",
+		LineEnding:          zapcore.DefaultLineEnding,
+		EncodeLevel:         zapcore.LowercaseLevelEncoder,
+		EncodeTime:          zapcore.ISO8601TimeEncoder,
+		EncodeDuration:      zapcore.SecondsDurationEncoder,
+		EncodeCaller:        zapcore.ShortCallerEncoder,
+		NewReflectedEncoder: jsoniterReflectedEncoder,
 	}
 
 	var formatEncoder zapcore.Encoder
@@ -129,17 +132,18 @@ func initWithConsole(encode string) zapcore.Core {
 
 func initWithFile(encode, filename string, maxSize, maxBackups, maxAge int) zapcore.Core {
 	encodeConfig := zapcore.EncoderConfig{
-		TimeKey:        "time",
-		LevelKey:       "level",
-		NameKey:        "logger",
-		CallerKey:      "caller",
-		MessageKey:     "message",
-		StacktraceKey:  "stacktrace",
-		LineEnding:     zapcore.DefaultLineEnding,
-		EncodeLevel:    zapcore.LowercaseLevelEncoder,
-		EncodeTime:     zapcore.ISO8601TimeEncoder,
-		EncodeDuration: zapcore.SecondsDurationEncoder,
-		EncodeCaller:   zapcore.ShortCallerEncoder,
+		TimeKey:             "time",
+		LevelKey:            "level",
+		NameKey:             "logger",
+		CallerKey:           "caller",
+		MessageKey:          "message",
+		StacktraceKey:       "stacktrace",
+		LineEnding:          zapcore.DefaultLineEnding,
+		EncodeLevel:         zapcore.LowercaseLevelEncoder,
+		EncodeTime:          zapcore.ISO8601TimeEncoder,
+		EncodeDuration:      zapcore.SecondsDurationEncoder,
+		EncodeCaller:        zapcore.ShortCallerEncoder,
+		NewReflectedEncoder: jsoniterReflectedEncoder,
 	}
 
 	var formatEncoder zapcore.Encoder
@@ -367,4 +371,11 @@ func NewErrorw(msg string, keysAndValues ...interface{}) error {
 		buffer.WriteString(fmt.Sprintf("%v: %v", keysAndValues[i], keysAndValues[i+1]))
 	}
 	return errors.New(buffer.String())
+}
+
+func jsoniterReflectedEncoder(w io.Writer) zapcore.ReflectedEncoder {
+	enc := jsoniter.NewEncoder(w)
+	// For consistency with our custom JSON encoder.
+	enc.SetEscapeHTML(false)
+	return enc
 }
