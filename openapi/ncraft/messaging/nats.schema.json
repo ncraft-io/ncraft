@@ -7,6 +7,16 @@
             "title": "mojo.core.String",
             "type": "string"
         },
+        "maxAge": {
+            "title": "mojo.core.Int64",
+            "type": "integer",
+            "format": "Int64"
+        },
+        "maxMsgs": {
+            "title": "mojo.core.Int64",
+            "type": "integer",
+            "format": "Int64"
+        },
         "topicNames": {
             "title": "mojo.core.Array",
             "type": "array",

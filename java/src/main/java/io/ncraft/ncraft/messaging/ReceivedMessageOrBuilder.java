@@ -42,14 +42,14 @@ public interface ReceivedMessageOrBuilder extends
   /**
    * <code>map&lt;string, .mojo.core.Value&gt; attributes = 2;</code>
    */
-
-  org.mojolang.mojo.core.Value getAttributesOrDefault(
+  /* nullable */
+org.mojolang.mojo.core.Value getAttributesOrDefault(
       java.lang.String key,
-      org.mojolang.mojo.core.Value defaultValue);
+      /* nullable */
+org.mojolang.mojo.core.Value defaultValue);
   /**
    * <code>map&lt;string, .mojo.core.Value&gt; attributes = 2;</code>
    */
-
   org.mojolang.mojo.core.Value getAttributesOrThrow(
       java.lang.String key);
 

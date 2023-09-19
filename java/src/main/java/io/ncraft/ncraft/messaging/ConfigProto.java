@@ -39,11 +39,12 @@ public final class ConfigProto {
       "roker\030\002 \001(\t\022\024\n\014service_name\030\003 \001(\t\0225\n\rsub" +
       "scriptions\030\n \003(\0132\036.ncraft.messaging.Subs" +
       "cription\022$\n\004nats\030\017 \001(\0132\026.ncraft.messagin" +
-      "g.Nats\"/\n\004Nats\022\022\n\njet_stream\030\001 \001(\t\022\023\n\013to" +
-      "pic_names\030\002 \003(\tBj\n\032io.ncraft.ncraft.mess" +
-      "agingB\013ConfigProtoP\001Z=github.com/ncraft-" +
-      "io/ncraft/go/pkg/ncraft/messaging;messag" +
-      "ingb\006proto3"
+      "g.Nats\"R\n\004Nats\022\022\n\njet_stream\030\001 \001(\t\022\023\n\013to" +
+      "pic_names\030\002 \003(\t\022\020\n\010max_msgs\030\003 \001(\003\022\017\n\007max" +
+      "_age\030\004 \001(\003Bj\n\032io.ncraft.ncraft.messaging" +
+      "B\013ConfigProtoP\001Z=github.com/ncraft-io/nc" +
+      "raft/go/pkg/ncraft/messaging;messagingb\006" +
+      "proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -61,7 +62,7 @@ public final class ConfigProto {
     internal_static_ncraft_messaging_Nats_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ncraft_messaging_Nats_descriptor,
-        new java.lang.String[] { "JetStream", "TopicNames", });
+        new java.lang.String[] { "JetStream", "TopicNames", "MaxMsgs", "MaxAge", });
     io.ncraft.ncraft.messaging.SubscriptionProto.getDescriptor();
   }
 
