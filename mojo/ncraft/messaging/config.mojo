@@ -14,4 +14,6 @@ type Config {
 type Nats {
     jet_stream: String @1
     topic_names: [String] @2
+    max_msgs: Int64 @3
+    max_age: Int64 @4
 }

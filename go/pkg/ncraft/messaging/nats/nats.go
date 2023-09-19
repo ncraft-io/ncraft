@@ -9,6 +9,7 @@ import (
     "regexp"
     "strconv"
     "strings"
+    "time"
 )
 
 func init() {
@@ -40,6 +41,8 @@ type Nats struct {
     streamName   string
     subjectNames []string
     pullNumber   int32
+    maxMsgs      int64
+	maxAge       int64
 }
 
 // New NewNats creates a new Nats connection
@@ -61,6 +64,8 @@ func New(config *messaging.Config) (*Nats, error) {
             n.js = js
             n.streamName = config.Nats.JetStream
             n.subjectNames = config.Nats.TopicNames
+            n.maxAge = config.Nats.GetMaxAge()
+			n.maxMsgs = config.Nats.GetMaxMsgs()
             if len(n.subjectNames) == 0 {
                 n.subjectNames = []string{n.streamName + ".*"}
             }
@@ -80,7 +85,14 @@ func (n *Nats) createStream(name string, subjects []string) {
     }
 
     if stream == nil {
-        if _, err = n.js.AddStream(&nats.StreamConfig{Name: name, Subjects: subjects}); err != nil {
+		streamConfig := &nats.StreamConfig{Name: name, Subjects: subjects}
+		if n.maxMsgs > 0 {
+			streamConfig.MaxMsgs = n.maxMsgs
+		}
+		if n.maxAge > 0 {
+			streamConfig.MaxAge = time.Duration(n.maxAge) * time.Second
+		}
+		if _, err = n.js.AddStream(streamConfig); err != nil {
             logs.Warnw("failed to creating stream", "name", name, "subjects", subjects, "error", err.Error())
         } else {
             logs.Infof("creating stream %q and subject %q", name, subjects)
@@ -105,7 +117,15 @@ func (n *Nats) createStream(name string, subjects []string) {
                     }
                 }
                 allSubjects = append(allSubjects, nonExists...)
-                if _, err := n.js.UpdateStream(&nats.StreamConfig{Name: n.streamName, Subjects: allSubjects}); err != nil {
+
+				streamConfig := &nats.StreamConfig{Name: name, Subjects: allSubjects}
+				if n.maxMsgs > 0 {
+					streamConfig.MaxMsgs = n.maxMsgs
+				}
+				if n.maxAge > 0 {
+					streamConfig.MaxAge = time.Duration(n.maxAge) * time.Second
+				}
+				if _, err := n.js.UpdateStream(streamConfig); err != nil {
                     logs.Warnw("failed to update stream", "name", n.streamName, "subjects", allSubjects, "error", err.Error())
                 }
             }

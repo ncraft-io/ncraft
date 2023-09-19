@@ -34,87 +34,6 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private Config(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    this();
-    if (extensionRegistry == null) {
-      throw new java.lang.NullPointerException();
-    }
-    int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
-    try {
-      boolean done = false;
-      while (!done) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            done = true;
-            break;
-          case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            provider_ = s;
-            break;
-          }
-          case 18: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            broker_ = s;
-            break;
-          }
-          case 26: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            serviceName_ = s;
-            break;
-          }
-          case 82: {
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              subscriptions_ = new java.util.ArrayList<io.ncraft.ncraft.messaging.Subscription>();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            subscriptions_.add(
-                input.readMessage(io.ncraft.ncraft.messaging.Subscription.parser(), extensionRegistry));
-            break;
-          }
-          case 122: {
-            io.ncraft.ncraft.messaging.Nats.Builder subBuilder = null;
-            if (nats_ != null) {
-              subBuilder = nats_.toBuilder();
-            }
-            nats_ = input.readMessage(io.ncraft.ncraft.messaging.Nats.parser(), extensionRegistry);
-            if (subBuilder != null) {
-              subBuilder.mergeFrom(nats_);
-              nats_ = subBuilder.buildPartial();
-            }
-
-            break;
-          }
-          default: {
-            if (!parseUnknownField(
-                input, unknownFields, extensionRegistry, tag)) {
-              done = true;
-            }
-            break;
-          }
-        }
-      }
-    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
-    } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e).setUnfinishedMessage(this);
-    } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        subscriptions_ = java.util.Collections.unmodifiableList(subscriptions_);
-      }
-      this.unknownFields = unknownFields.build();
-      makeExtensionsImmutable();
-    }
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.ncraft.ncraft.messaging.ConfigProto.internal_static_ncraft_messaging_Config_descriptor;
@@ -129,7 +48,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int PROVIDER_FIELD_NUMBER = 1;
-  private volatile java.lang.Object provider_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object provider_ = "";
   /**
    * <code>string provider = 1;</code>
    * @return The provider.
@@ -167,7 +87,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int BROKER_FIELD_NUMBER = 2;
-  private volatile java.lang.Object broker_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object broker_ = "";
   /**
    * <code>string broker = 2;</code>
    * @return The broker.
@@ -205,7 +126,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int SERVICE_NAME_FIELD_NUMBER = 3;
-  private volatile java.lang.Object serviceName_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object serviceName_ = "";
   /**
    * <code>string service_name = 3;</code>
    * @return The serviceName.
@@ -243,6 +165,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int SUBSCRIPTIONS_FIELD_NUMBER = 10;
+  @SuppressWarnings("serial")
   private java.util.List<io.ncraft.ncraft.messaging.Subscription> subscriptions_;
   /**
    * <code>repeated .ncraft.messaging.Subscription subscriptions = 10;</code>
@@ -305,7 +228,7 @@ private static final long serialVersionUID = 0L;
    */
   @java.lang.Override
   public io.ncraft.ncraft.messaging.NatsOrBuilder getNatsOrBuilder() {
-    return getNats();
+    return nats_ == null ? io.ncraft.ncraft.messaging.Nats.getDefaultInstance() : nats_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -337,7 +260,7 @@ private static final long serialVersionUID = 0L;
     if (nats_ != null) {
       output.writeMessage(15, getNats());
     }
-    unknownFields.writeTo(output);
+    getUnknownFields().writeTo(output);
   }
 
   @java.lang.Override
@@ -363,7 +286,7 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(15, getNats());
     }
-    size += unknownFields.getSerializedSize();
+    size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -391,7 +314,7 @@ private static final long serialVersionUID = 0L;
       if (!getNats()
           .equals(other.getNats())) return false;
     }
-    if (!unknownFields.equals(other.unknownFields)) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
 
@@ -416,7 +339,7 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + NATS_FIELD_NUMBER;
       hash = (53 * hash) + getNats().hashCode();
     }
-    hash = (29 * hash) + unknownFields.hashCode();
+    hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -533,39 +456,31 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.ncraft.ncraft.messaging.Config.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-        getSubscriptionsFieldBuilder();
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       provider_ = "";
-
       broker_ = "";
-
       serviceName_ = "";
-
       if (subscriptionsBuilder_ == null) {
         subscriptions_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
       } else {
+        subscriptions_ = null;
         subscriptionsBuilder_.clear();
       }
-      if (natsBuilder_ == null) {
-        nats_ = null;
-      } else {
-        nats_ = null;
+      bitField0_ = (bitField0_ & ~0x00000008);
+      nats_ = null;
+      if (natsBuilder_ != null) {
+        natsBuilder_.dispose();
         natsBuilder_ = null;
       }
       return this;
@@ -594,26 +509,40 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.ncraft.ncraft.messaging.Config buildPartial() {
       io.ncraft.ncraft.messaging.Config result = new io.ncraft.ncraft.messaging.Config(this);
-      int from_bitField0_ = bitField0_;
-      result.provider_ = provider_;
-      result.broker_ = broker_;
-      result.serviceName_ = serviceName_;
+      buildPartialRepeatedFields(result);
+      if (bitField0_ != 0) { buildPartial0(result); }
+      onBuilt();
+      return result;
+    }
+
+    private void buildPartialRepeatedFields(io.ncraft.ncraft.messaging.Config result) {
       if (subscriptionsBuilder_ == null) {
-        if (((bitField0_ & 0x00000001) != 0)) {
+        if (((bitField0_ & 0x00000008) != 0)) {
           subscriptions_ = java.util.Collections.unmodifiableList(subscriptions_);
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000008);
         }
         result.subscriptions_ = subscriptions_;
       } else {
         result.subscriptions_ = subscriptionsBuilder_.build();
       }
-      if (natsBuilder_ == null) {
-        result.nats_ = nats_;
-      } else {
-        result.nats_ = natsBuilder_.build();
+    }
+
+    private void buildPartial0(io.ncraft.ncraft.messaging.Config result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.provider_ = provider_;
       }
-      onBuilt();
-      return result;
+      if (((from_bitField0_ & 0x00000002) != 0)) {
+        result.broker_ = broker_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.serviceName_ = serviceName_;
+      }
+      if (((from_bitField0_ & 0x00000010) != 0)) {
+        result.nats_ = natsBuilder_ == null
+            ? nats_
+            : natsBuilder_.build();
+      }
     }
 
     @java.lang.Override
@@ -662,21 +591,24 @@ private static final long serialVersionUID = 0L;
       if (other == io.ncraft.ncraft.messaging.Config.getDefaultInstance()) return this;
       if (!other.getProvider().isEmpty()) {
         provider_ = other.provider_;
+        bitField0_ |= 0x00000001;
         onChanged();
       }
       if (!other.getBroker().isEmpty()) {
         broker_ = other.broker_;
+        bitField0_ |= 0x00000002;
         onChanged();
       }
       if (!other.getServiceName().isEmpty()) {
         serviceName_ = other.serviceName_;
+        bitField0_ |= 0x00000004;
         onChanged();
       }
       if (subscriptionsBuilder_ == null) {
         if (!other.subscriptions_.isEmpty()) {
           if (subscriptions_.isEmpty()) {
             subscriptions_ = other.subscriptions_;
-            bitField0_ = (bitField0_ & ~0x00000001);
+            bitField0_ = (bitField0_ & ~0x00000008);
           } else {
             ensureSubscriptionsIsMutable();
             subscriptions_.addAll(other.subscriptions_);
@@ -689,7 +621,7 @@ private static final long serialVersionUID = 0L;
             subscriptionsBuilder_.dispose();
             subscriptionsBuilder_ = null;
             subscriptions_ = other.subscriptions_;
-            bitField0_ = (bitField0_ & ~0x00000001);
+            bitField0_ = (bitField0_ & ~0x00000008);
             subscriptionsBuilder_ = 
               com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
                  getSubscriptionsFieldBuilder() : null;
@@ -701,7 +633,7 @@ private static final long serialVersionUID = 0L;
       if (other.hasNats()) {
         mergeNats(other.getNats());
       }
-      this.mergeUnknownFields(other.unknownFields);
+      this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
     }
@@ -716,17 +648,65 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.ncraft.ncraft.messaging.Config parsedMessage = null;
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       try {
-        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              provider_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 10
+            case 18: {
+              broker_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000002;
+              break;
+            } // case 18
+            case 26: {
+              serviceName_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 26
+            case 82: {
+              io.ncraft.ncraft.messaging.Subscription m =
+                  input.readMessage(
+                      io.ncraft.ncraft.messaging.Subscription.parser(),
+                      extensionRegistry);
+              if (subscriptionsBuilder_ == null) {
+                ensureSubscriptionsIsMutable();
+                subscriptions_.add(m);
+              } else {
+                subscriptionsBuilder_.addMessage(m);
+              }
+              break;
+            } // case 82
+            case 122: {
+              input.readMessage(
+                  getNatsFieldBuilder().getBuilder(),
+                  extensionRegistry);
+              bitField0_ |= 0x00000010;
+              break;
+            } // case 122
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.ncraft.ncraft.messaging.Config) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        if (parsedMessage != null) {
-          mergeFrom(parsedMessage);
-        }
-      }
+        onChanged();
+      } // finally
       return this;
     }
     private int bitField0_;
@@ -772,11 +752,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setProvider(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       provider_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -785,8 +763,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearProvider() {
-      
       provider_ = getDefaultInstance().getProvider();
+      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -797,12 +775,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setProviderBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       provider_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -848,11 +824,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setBroker(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       broker_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -861,8 +835,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearBroker() {
-      
       broker_ = getDefaultInstance().getBroker();
+      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
@@ -873,12 +847,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setBrokerBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       broker_ = value;
+      bitField0_ |= 0x00000002;
       onChanged();
       return this;
     }
@@ -924,11 +896,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setServiceName(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       serviceName_ = value;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -937,8 +907,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearServiceName() {
-      
       serviceName_ = getDefaultInstance().getServiceName();
+      bitField0_ = (bitField0_ & ~0x00000004);
       onChanged();
       return this;
     }
@@ -949,12 +919,10 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setServiceNameBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       serviceName_ = value;
+      bitField0_ |= 0x00000004;
       onChanged();
       return this;
     }
@@ -962,9 +930,9 @@ private static final long serialVersionUID = 0L;
     private java.util.List<io.ncraft.ncraft.messaging.Subscription> subscriptions_ =
       java.util.Collections.emptyList();
     private void ensureSubscriptionsIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
+      if (!((bitField0_ & 0x00000008) != 0)) {
         subscriptions_ = new java.util.ArrayList<io.ncraft.ncraft.messaging.Subscription>(subscriptions_);
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000008;
        }
     }
 
@@ -1114,7 +1082,7 @@ private static final long serialVersionUID = 0L;
     public Builder clearSubscriptions() {
       if (subscriptionsBuilder_ == null) {
         subscriptions_ = java.util.Collections.emptyList();
-        bitField0_ = (bitField0_ & ~0x00000001);
+        bitField0_ = (bitField0_ & ~0x00000008);
         onChanged();
       } else {
         subscriptionsBuilder_.clear();
@@ -1191,7 +1159,7 @@ private static final long serialVersionUID = 0L;
         subscriptionsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
             io.ncraft.ncraft.messaging.Subscription, io.ncraft.ncraft.messaging.Subscription.Builder, io.ncraft.ncraft.messaging.SubscriptionOrBuilder>(
                 subscriptions_,
-                ((bitField0_ & 0x00000001) != 0),
+                ((bitField0_ & 0x00000008) != 0),
                 getParentForChildren(),
                 isClean());
         subscriptions_ = null;
@@ -1207,7 +1175,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the nats field is set.
      */
     public boolean hasNats() {
-      return natsBuilder_ != null || nats_ != null;
+      return ((bitField0_ & 0x00000010) != 0);
     }
     /**
      * <code>.ncraft.messaging.Nats nats = 15;</code>
@@ -1229,11 +1197,11 @@ private static final long serialVersionUID = 0L;
           throw new NullPointerException();
         }
         nats_ = value;
-        onChanged();
       } else {
         natsBuilder_.setMessage(value);
       }
-
+      bitField0_ |= 0x00000010;
+      onChanged();
       return this;
     }
     /**
@@ -1243,11 +1211,11 @@ private static final long serialVersionUID = 0L;
         io.ncraft.ncraft.messaging.Nats.Builder builderForValue) {
       if (natsBuilder_ == null) {
         nats_ = builderForValue.build();
-        onChanged();
       } else {
         natsBuilder_.setMessage(builderForValue.build());
       }
-
+      bitField0_ |= 0x00000010;
+      onChanged();
       return this;
     }
     /**
@@ -1255,38 +1223,38 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeNats(io.ncraft.ncraft.messaging.Nats value) {
       if (natsBuilder_ == null) {
-        if (nats_ != null) {
-          nats_ =
-            io.ncraft.ncraft.messaging.Nats.newBuilder(nats_).mergeFrom(value).buildPartial();
+        if (((bitField0_ & 0x00000010) != 0) &&
+          nats_ != null &&
+          nats_ != io.ncraft.ncraft.messaging.Nats.getDefaultInstance()) {
+          getNatsBuilder().mergeFrom(value);
         } else {
           nats_ = value;
         }
-        onChanged();
       } else {
         natsBuilder_.mergeFrom(value);
       }
-
+      bitField0_ |= 0x00000010;
+      onChanged();
       return this;
     }
     /**
      * <code>.ncraft.messaging.Nats nats = 15;</code>
      */
     public Builder clearNats() {
-      if (natsBuilder_ == null) {
-        nats_ = null;
-        onChanged();
-      } else {
-        nats_ = null;
+      bitField0_ = (bitField0_ & ~0x00000010);
+      nats_ = null;
+      if (natsBuilder_ != null) {
+        natsBuilder_.dispose();
         natsBuilder_ = null;
       }
-
+      onChanged();
       return this;
     }
     /**
      * <code>.ncraft.messaging.Nats nats = 15;</code>
      */
     public io.ncraft.ncraft.messaging.Nats.Builder getNatsBuilder() {
-      
+      bitField0_ |= 0x00000010;
       onChanged();
       return getNatsFieldBuilder().getBuilder();
     }
@@ -1350,7 +1318,18 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Config(input, extensionRegistry);
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

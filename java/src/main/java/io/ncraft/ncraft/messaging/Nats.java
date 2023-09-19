@@ -32,62 +32,6 @@ private static final long serialVersionUID = 0L;
   getUnknownFields() {
     return this.unknownFields;
   }
-  private Nats(
-      com.google.protobuf.CodedInputStream input,
-      com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-      throws com.google.protobuf.InvalidProtocolBufferException {
-    this();
-    if (extensionRegistry == null) {
-      throw new java.lang.NullPointerException();
-    }
-    int mutable_bitField0_ = 0;
-    com.google.protobuf.UnknownFieldSet.Builder unknownFields =
-        com.google.protobuf.UnknownFieldSet.newBuilder();
-    try {
-      boolean done = false;
-      while (!done) {
-        int tag = input.readTag();
-        switch (tag) {
-          case 0:
-            done = true;
-            break;
-          case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            jetStream_ = s;
-            break;
-          }
-          case 18: {
-            java.lang.String s = input.readStringRequireUtf8();
-            if (!((mutable_bitField0_ & 0x00000001) != 0)) {
-              topicNames_ = new com.google.protobuf.LazyStringArrayList();
-              mutable_bitField0_ |= 0x00000001;
-            }
-            topicNames_.add(s);
-            break;
-          }
-          default: {
-            if (!parseUnknownField(
-                input, unknownFields, extensionRegistry, tag)) {
-              done = true;
-            }
-            break;
-          }
-        }
-      }
-    } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-      throw e.setUnfinishedMessage(this);
-    } catch (java.io.IOException e) {
-      throw new com.google.protobuf.InvalidProtocolBufferException(
-          e).setUnfinishedMessage(this);
-    } finally {
-      if (((mutable_bitField0_ & 0x00000001) != 0)) {
-        topicNames_ = topicNames_.getUnmodifiableView();
-      }
-      this.unknownFields = unknownFields.build();
-      makeExtensionsImmutable();
-    }
-  }
   public static final com.google.protobuf.Descriptors.Descriptor
       getDescriptor() {
     return io.ncraft.ncraft.messaging.ConfigProto.internal_static_ncraft_messaging_Nats_descriptor;
@@ -102,7 +46,8 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int JET_STREAM_FIELD_NUMBER = 1;
-  private volatile java.lang.Object jetStream_;
+  @SuppressWarnings("serial")
+  private volatile java.lang.Object jetStream_ = "";
   /**
    * <code>string jet_stream = 1;</code>
    * @return The jetStream.
@@ -140,6 +85,7 @@ private static final long serialVersionUID = 0L;
   }
 
   public static final int TOPIC_NAMES_FIELD_NUMBER = 2;
+  @SuppressWarnings("serial")
   private com.google.protobuf.LazyStringList topicNames_;
   /**
    * <code>repeated string topic_names = 2;</code>
@@ -174,6 +120,28 @@ private static final long serialVersionUID = 0L;
     return topicNames_.getByteString(index);
   }
 
+  public static final int MAX_MSGS_FIELD_NUMBER = 3;
+  private long maxMsgs_ = 0L;
+  /**
+   * <code>int64 max_msgs = 3;</code>
+   * @return The maxMsgs.
+   */
+  @java.lang.Override
+  public long getMaxMsgs() {
+    return maxMsgs_;
+  }
+
+  public static final int MAX_AGE_FIELD_NUMBER = 4;
+  private long maxAge_ = 0L;
+  /**
+   * <code>int64 max_age = 4;</code>
+   * @return The maxAge.
+   */
+  @java.lang.Override
+  public long getMaxAge() {
+    return maxAge_;
+  }
+
   private byte memoizedIsInitialized = -1;
   @java.lang.Override
   public final boolean isInitialized() {
@@ -194,7 +162,13 @@ private static final long serialVersionUID = 0L;
     for (int i = 0; i < topicNames_.size(); i++) {
       com.google.protobuf.GeneratedMessageV3.writeString(output, 2, topicNames_.getRaw(i));
     }
-    unknownFields.writeTo(output);
+    if (maxMsgs_ != 0L) {
+      output.writeInt64(3, maxMsgs_);
+    }
+    if (maxAge_ != 0L) {
+      output.writeInt64(4, maxAge_);
+    }
+    getUnknownFields().writeTo(output);
   }
 
   @java.lang.Override
@@ -214,7 +188,15 @@ private static final long serialVersionUID = 0L;
       size += dataSize;
       size += 1 * getTopicNamesList().size();
     }
-    size += unknownFields.getSerializedSize();
+    if (maxMsgs_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(3, maxMsgs_);
+    }
+    if (maxAge_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(4, maxAge_);
+    }
+    size += getUnknownFields().getSerializedSize();
     memoizedSize = size;
     return size;
   }
@@ -233,7 +215,11 @@ private static final long serialVersionUID = 0L;
         .equals(other.getJetStream())) return false;
     if (!getTopicNamesList()
         .equals(other.getTopicNamesList())) return false;
-    if (!unknownFields.equals(other.unknownFields)) return false;
+    if (getMaxMsgs()
+        != other.getMaxMsgs()) return false;
+    if (getMaxAge()
+        != other.getMaxAge()) return false;
+    if (!getUnknownFields().equals(other.getUnknownFields())) return false;
     return true;
   }
 
@@ -250,7 +236,13 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + TOPIC_NAMES_FIELD_NUMBER;
       hash = (53 * hash) + getTopicNamesList().hashCode();
     }
-    hash = (29 * hash) + unknownFields.hashCode();
+    hash = (37 * hash) + MAX_MSGS_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getMaxMsgs());
+    hash = (37 * hash) + MAX_AGE_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getMaxAge());
+    hash = (29 * hash) + getUnknownFields().hashCode();
     memoizedHashCode = hash;
     return hash;
   }
@@ -367,26 +359,23 @@ private static final long serialVersionUID = 0L;
 
     // Construct using io.ncraft.ncraft.messaging.Nats.newBuilder()
     private Builder() {
-      maybeForceBuilderInitialization();
+
     }
 
     private Builder(
         com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
       super(parent);
-      maybeForceBuilderInitialization();
-    }
-    private void maybeForceBuilderInitialization() {
-      if (com.google.protobuf.GeneratedMessageV3
-              .alwaysUseFieldBuilders) {
-      }
+
     }
     @java.lang.Override
     public Builder clear() {
       super.clear();
+      bitField0_ = 0;
       jetStream_ = "";
-
       topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
+      maxMsgs_ = 0L;
+      maxAge_ = 0L;
       return this;
     }
 
@@ -413,15 +402,31 @@ private static final long serialVersionUID = 0L;
     @java.lang.Override
     public io.ncraft.ncraft.messaging.Nats buildPartial() {
       io.ncraft.ncraft.messaging.Nats result = new io.ncraft.ncraft.messaging.Nats(this);
-      int from_bitField0_ = bitField0_;
-      result.jetStream_ = jetStream_;
-      if (((bitField0_ & 0x00000001) != 0)) {
-        topicNames_ = topicNames_.getUnmodifiableView();
-        bitField0_ = (bitField0_ & ~0x00000001);
-      }
-      result.topicNames_ = topicNames_;
+      buildPartialRepeatedFields(result);
+      if (bitField0_ != 0) { buildPartial0(result); }
       onBuilt();
       return result;
+    }
+
+    private void buildPartialRepeatedFields(io.ncraft.ncraft.messaging.Nats result) {
+      if (((bitField0_ & 0x00000002) != 0)) {
+        topicNames_ = topicNames_.getUnmodifiableView();
+        bitField0_ = (bitField0_ & ~0x00000002);
+      }
+      result.topicNames_ = topicNames_;
+    }
+
+    private void buildPartial0(io.ncraft.ncraft.messaging.Nats result) {
+      int from_bitField0_ = bitField0_;
+      if (((from_bitField0_ & 0x00000001) != 0)) {
+        result.jetStream_ = jetStream_;
+      }
+      if (((from_bitField0_ & 0x00000004) != 0)) {
+        result.maxMsgs_ = maxMsgs_;
+      }
+      if (((from_bitField0_ & 0x00000008) != 0)) {
+        result.maxAge_ = maxAge_;
+      }
     }
 
     @java.lang.Override
@@ -470,19 +475,26 @@ private static final long serialVersionUID = 0L;
       if (other == io.ncraft.ncraft.messaging.Nats.getDefaultInstance()) return this;
       if (!other.getJetStream().isEmpty()) {
         jetStream_ = other.jetStream_;
+        bitField0_ |= 0x00000001;
         onChanged();
       }
       if (!other.topicNames_.isEmpty()) {
         if (topicNames_.isEmpty()) {
           topicNames_ = other.topicNames_;
-          bitField0_ = (bitField0_ & ~0x00000001);
+          bitField0_ = (bitField0_ & ~0x00000002);
         } else {
           ensureTopicNamesIsMutable();
           topicNames_.addAll(other.topicNames_);
         }
         onChanged();
       }
-      this.mergeUnknownFields(other.unknownFields);
+      if (other.getMaxMsgs() != 0L) {
+        setMaxMsgs(other.getMaxMsgs());
+      }
+      if (other.getMaxAge() != 0L) {
+        setMaxAge(other.getMaxAge());
+      }
+      this.mergeUnknownFields(other.getUnknownFields());
       onChanged();
       return this;
     }
@@ -497,17 +509,51 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      io.ncraft.ncraft.messaging.Nats parsedMessage = null;
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
       try {
-        parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              jetStream_ = input.readStringRequireUtf8();
+              bitField0_ |= 0x00000001;
+              break;
+            } // case 10
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+              ensureTopicNamesIsMutable();
+              topicNames_.add(s);
+              break;
+            } // case 18
+            case 24: {
+              maxMsgs_ = input.readInt64();
+              bitField0_ |= 0x00000004;
+              break;
+            } // case 24
+            case 32: {
+              maxAge_ = input.readInt64();
+              bitField0_ |= 0x00000008;
+              break;
+            } // case 32
+            default: {
+              if (!super.parseUnknownField(input, extensionRegistry, tag)) {
+                done = true; // was an endgroup tag
+              }
+              break;
+            } // default:
+          } // switch (tag)
+        } // while (!done)
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-        parsedMessage = (io.ncraft.ncraft.messaging.Nats) e.getUnfinishedMessage();
         throw e.unwrapIOException();
       } finally {
-        if (parsedMessage != null) {
-          mergeFrom(parsedMessage);
-        }
-      }
+        onChanged();
+      } // finally
       return this;
     }
     private int bitField0_;
@@ -553,11 +599,9 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setJetStream(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
+      if (value == null) { throw new NullPointerException(); }
       jetStream_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
@@ -566,8 +610,8 @@ private static final long serialVersionUID = 0L;
      * @return This builder for chaining.
      */
     public Builder clearJetStream() {
-      
       jetStream_ = getDefaultInstance().getJetStream();
+      bitField0_ = (bitField0_ & ~0x00000001);
       onChanged();
       return this;
     }
@@ -578,21 +622,19 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setJetStreamBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       jetStream_ = value;
+      bitField0_ |= 0x00000001;
       onChanged();
       return this;
     }
 
     private com.google.protobuf.LazyStringList topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
     private void ensureTopicNamesIsMutable() {
-      if (!((bitField0_ & 0x00000001) != 0)) {
+      if (!((bitField0_ & 0x00000002) != 0)) {
         topicNames_ = new com.google.protobuf.LazyStringArrayList(topicNames_);
-        bitField0_ |= 0x00000001;
+        bitField0_ |= 0x00000002;
        }
     }
     /**
@@ -635,10 +677,8 @@ private static final long serialVersionUID = 0L;
      */
     public Builder setTopicNames(
         int index, java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureTopicNamesIsMutable();
+      if (value == null) { throw new NullPointerException(); }
+      ensureTopicNamesIsMutable();
       topicNames_.set(index, value);
       onChanged();
       return this;
@@ -650,10 +690,8 @@ private static final long serialVersionUID = 0L;
      */
     public Builder addTopicNames(
         java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  ensureTopicNamesIsMutable();
+      if (value == null) { throw new NullPointerException(); }
+      ensureTopicNamesIsMutable();
       topicNames_.add(value);
       onChanged();
       return this;
@@ -677,7 +715,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder clearTopicNames() {
       topicNames_ = com.google.protobuf.LazyStringArrayList.EMPTY;
-      bitField0_ = (bitField0_ & ~0x00000001);
+      bitField0_ = (bitField0_ & ~0x00000002);
       onChanged();
       return this;
     }
@@ -688,12 +726,74 @@ private static final long serialVersionUID = 0L;
      */
     public Builder addTopicNamesBytes(
         com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
+      if (value == null) { throw new NullPointerException(); }
+      checkByteStringIsUtf8(value);
       ensureTopicNamesIsMutable();
       topicNames_.add(value);
+      onChanged();
+      return this;
+    }
+
+    private long maxMsgs_ ;
+    /**
+     * <code>int64 max_msgs = 3;</code>
+     * @return The maxMsgs.
+     */
+    @java.lang.Override
+    public long getMaxMsgs() {
+      return maxMsgs_;
+    }
+    /**
+     * <code>int64 max_msgs = 3;</code>
+     * @param value The maxMsgs to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMaxMsgs(long value) {
+      
+      maxMsgs_ = value;
+      bitField0_ |= 0x00000004;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 max_msgs = 3;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMaxMsgs() {
+      bitField0_ = (bitField0_ & ~0x00000004);
+      maxMsgs_ = 0L;
+      onChanged();
+      return this;
+    }
+
+    private long maxAge_ ;
+    /**
+     * <code>int64 max_age = 4;</code>
+     * @return The maxAge.
+     */
+    @java.lang.Override
+    public long getMaxAge() {
+      return maxAge_;
+    }
+    /**
+     * <code>int64 max_age = 4;</code>
+     * @param value The maxAge to set.
+     * @return This builder for chaining.
+     */
+    public Builder setMaxAge(long value) {
+      
+      maxAge_ = value;
+      bitField0_ |= 0x00000008;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 max_age = 4;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearMaxAge() {
+      bitField0_ = (bitField0_ & ~0x00000008);
+      maxAge_ = 0L;
       onChanged();
       return this;
     }
@@ -730,7 +830,18 @@ private static final long serialVersionUID = 0L;
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      return new Nats(input, extensionRegistry);
+      Builder builder = newBuilder();
+      try {
+        builder.mergeFrom(input, extensionRegistry);
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(builder.buildPartial());
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(builder.buildPartial());
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(e)
+            .setUnfinishedMessage(builder.buildPartial());
+      }
+      return builder.buildPartial();
     }
   };
 

@@ -43,4 +43,16 @@ public interface NatsOrBuilder extends
    */
   com.google.protobuf.ByteString
       getTopicNamesBytes(int index);
+
+  /**
+   * <code>int64 max_msgs = 3;</code>
+   * @return The maxMsgs.
+   */
+  long getMaxMsgs();
+
+  /**
+   * <code>int64 max_age = 4;</code>
+   * @return The maxAge.
+   */
+  long getMaxAge();
 }

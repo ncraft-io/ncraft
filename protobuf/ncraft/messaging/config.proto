@@ -22,4 +22,6 @@ message Config {
 message Nats {
     string jet_stream = 1;
     repeated string topic_names = 2;
+    int64 max_msgs = 3;
+    int64 max_age = 4;
 }
