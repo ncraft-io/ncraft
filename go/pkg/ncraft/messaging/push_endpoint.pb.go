@@ -42,7 +42,7 @@ func (x *PushEndpoint) Reset() {
 	}
 }
 
-func (x *PushEndpoint) ToText() string {
+func (x *PushEndpoint) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 

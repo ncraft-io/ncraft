@@ -46,7 +46,7 @@ func (x *Subscription) Reset() {
 	}
 }
 
-func (x *Subscription) ToText() string {
+func (x *Subscription) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 

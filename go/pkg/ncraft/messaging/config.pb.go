@@ -43,7 +43,7 @@ func (x *Config) Reset() {
 	}
 }
 
-func (x *Config) ToText() string {
+func (x *Config) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
@@ -121,7 +121,7 @@ func (x *Nats) Reset() {
 	}
 }
 
-func (x *Nats) ToText() string {
+func (x *Nats) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
