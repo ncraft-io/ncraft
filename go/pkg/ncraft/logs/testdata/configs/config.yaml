@@ -1,0 +1,8 @@
+logs:
+  level: debug
+  encode: console #json or console
+  file:
+    maxSize: 100
+    maxBackups: 10
+    maxAge: 28
+    compress: true

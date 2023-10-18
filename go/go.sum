@@ -234,8 +234,8 @@ github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd h1:TRLaZ9cD/w
 github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd/go.mod h1:6dJC0mAP4ikYIbvyc7fijjWJddQyLn8Ig3JB5CqoB9Q=
 github.com/modern-go/reflect2 v1.0.2 h1:xBagoLtFs94CBntxluKeaWgTMpvLxC4ur3nMaC9Gz0M=
 github.com/modern-go/reflect2 v1.0.2/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjYzDa0/r8luk=
-github.com/mojo-lang/core/go v0.0.0-20231009061615-f75fad8ff39f h1:JxNrAHzYQxVo9nLSXwrwdsglO6WOFY+xJX6IXFNg0yI=
-github.com/mojo-lang/core/go v0.0.0-20231009061615-f75fad8ff39f/go.mod h1:2M6i+RgL+qBMsCPWNDTk6GIqqCuT2Q80u0LeGhuaAuo=
+github.com/mojo-lang/core/go v0.0.0-20231018025631-4656d7efb735 h1:xAQ5oXpq2hgce7QbgFbiHdCPN0s1lnIGyqLRX60Lhmc=
+github.com/mojo-lang/core/go v0.0.0-20231018025631-4656d7efb735/go.mod h1:2M6i+RgL+qBMsCPWNDTk6GIqqCuT2Q80u0LeGhuaAuo=
 github.com/mojo-lang/document/go v0.0.0-20231009062124-1063661ebfdd h1:GJqOnNVSTxjfXVJJLsfMaaDtfwPrtDJ1QM/BRL2OCBo=
 github.com/mojo-lang/document/go v0.0.0-20231009062124-1063661ebfdd/go.mod h1:4t20RlblbupiUN/BvsoUJ+N6kR2M1rVyuSdXZOrz05A=
 github.com/mojo-lang/http/go v0.0.0-20231010080939-3c7c55cdd684 h1:S7GI9CO1fj7IkZYT2WOv6hQoSEDK/FYJIbdxHtZbQ/8=

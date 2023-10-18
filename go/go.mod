@@ -17,7 +17,7 @@ require (
 	github.com/imdario/mergo v0.3.12
 	github.com/json-iterator/go v1.1.12
 	github.com/minio/minio-go v6.0.14+incompatible
-	github.com/mojo-lang/core/go v0.0.0-20231009061615-f75fad8ff39f
+	github.com/mojo-lang/core/go v0.0.0-20231018025631-4656d7efb735
 	github.com/mojo-lang/http/go v0.0.0-20231010080939-3c7c55cdd684
 	github.com/nats-io/nats.go v1.30.2
 	github.com/pkg/errors v0.9.1
