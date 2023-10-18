@@ -243,7 +243,12 @@ func (n *Nats) queueSubscribe(opts *messaging.Subscription, cb nats.MsgHandler) 
         if opts.Pull {
             return n.pullSubscribe(opts, cb)
         } else {
-            return n.js.QueueSubscribe(opts.Topic, opts.Group, cb)
+            sub, err := n.js.QueueSubscribe(opts.Topic, opts.Group, cb)
+            if err != nil {
+                return nil ,err
+            }
+            sub.SetPendingLimits(-1,-1)
+            return sub, nil
         }
     } else {
         return n.conn.QueueSubscribe(opts.Topic, opts.Group, cb)
