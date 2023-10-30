@@ -52,7 +52,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mojo-lang/document/go v0.0.0-20231009062124-1063661ebfdd // indirect
 	github.com/mojo-lang/lang/go v0.0.0-20231010080053-8365ee3ed1cd // indirect
-	github.com/nats-io/nats-server/v2 v2.8.1 // indirect
+	github.com/nats-io/nats-server/v2 v2.9.23 // indirect
 	github.com/nats-io/nkeys v0.4.5 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/phpdave11/gofpdf v1.4.2 // indirect
