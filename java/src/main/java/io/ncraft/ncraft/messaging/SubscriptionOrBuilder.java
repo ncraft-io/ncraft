@@ -71,6 +71,24 @@ public interface SubscriptionOrBuilder extends
   org.mojolang.mojo.core.DurationOrBuilder getAckTimeoutOrBuilder();
 
   /**
+   * <code>int64 pull_max_waiting = 11;</code>
+   * @return The pullMaxWaiting.
+   */
+  long getPullMaxWaiting();
+
+  /**
+   * <code>int64 pending_msg_limit = 12;</code>
+   * @return The pendingMsgLimit.
+   */
+  long getPendingMsgLimit();
+
+  /**
+   * <code>int64 pending_bytes_limit = 13;</code>
+   * @return The pendingBytesLimit.
+   */
+  long getPendingBytesLimit();
+
+  /**
    * <code>.ncraft.messaging.PushEndpoint endpoint = 15;</code>
    * @return Whether the endpoint field is set.
    */

@@ -5,5 +5,8 @@
 | `endpoint` | `ncraft.messaging.PushEndpoint` |  | N |  |  |
 | `group` | `string` |  | N |  |
 | `name` | `string` |  | N |  |
+| `pendingBytesLimit` | `integer` | `Int64` | N |  |
+| `pendingMsgLimit` | `integer` | `Int64` | N |  |
 | `pull` | `boolean` |  | N |  |
+| `pullMaxWaiting` | `integer` | `Int64` | N |  |
 | `topic` | `string` |  | N |  |

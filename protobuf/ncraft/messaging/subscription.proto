@@ -19,5 +19,8 @@ message Subscription {
     bool pull = 7;
     bool auto_ack = 9;
     mojo.core.Duration ack_timeout = 10;
+    int64 pull_max_waiting = 11;
+    int64 pending_msg_limit = 12;
+    int64 pending_bytes_limit = 13;
     PushEndpoint endpoint = 15;
 }

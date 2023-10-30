@@ -21,9 +21,24 @@
             "title": "mojo.core.String",
             "type": "string"
         },
+        "pendingBytesLimit": {
+            "title": "mojo.core.Int64",
+            "type": "integer",
+            "format": "Int64"
+        },
+        "pendingMsgLimit": {
+            "title": "mojo.core.Int64",
+            "type": "integer",
+            "format": "Int64"
+        },
         "pull": {
             "title": "mojo.core.Bool",
             "type": "boolean"
+        },
+        "pullMaxWaiting": {
+            "title": "mojo.core.Int64",
+            "type": "integer",
+            "format": "Int64"
         },
         "topic": {
             "title": "mojo.core.String",

@@ -211,6 +211,39 @@ private static final long serialVersionUID = 0L;
     return ackTimeout_ == null ? org.mojolang.mojo.core.Duration.getDefaultInstance() : ackTimeout_;
   }
 
+  public static final int PULL_MAX_WAITING_FIELD_NUMBER = 11;
+  private long pullMaxWaiting_ = 0L;
+  /**
+   * <code>int64 pull_max_waiting = 11;</code>
+   * @return The pullMaxWaiting.
+   */
+  @java.lang.Override
+  public long getPullMaxWaiting() {
+    return pullMaxWaiting_;
+  }
+
+  public static final int PENDING_MSG_LIMIT_FIELD_NUMBER = 12;
+  private long pendingMsgLimit_ = 0L;
+  /**
+   * <code>int64 pending_msg_limit = 12;</code>
+   * @return The pendingMsgLimit.
+   */
+  @java.lang.Override
+  public long getPendingMsgLimit() {
+    return pendingMsgLimit_;
+  }
+
+  public static final int PENDING_BYTES_LIMIT_FIELD_NUMBER = 13;
+  private long pendingBytesLimit_ = 0L;
+  /**
+   * <code>int64 pending_bytes_limit = 13;</code>
+   * @return The pendingBytesLimit.
+   */
+  @java.lang.Override
+  public long getPendingBytesLimit() {
+    return pendingBytesLimit_;
+  }
+
   public static final int ENDPOINT_FIELD_NUMBER = 15;
   private io.ncraft.ncraft.messaging.PushEndpoint endpoint_;
   /**
@@ -269,6 +302,15 @@ private static final long serialVersionUID = 0L;
     if (ackTimeout_ != null) {
       output.writeMessage(10, getAckTimeout());
     }
+    if (pullMaxWaiting_ != 0L) {
+      output.writeInt64(11, pullMaxWaiting_);
+    }
+    if (pendingMsgLimit_ != 0L) {
+      output.writeInt64(12, pendingMsgLimit_);
+    }
+    if (pendingBytesLimit_ != 0L) {
+      output.writeInt64(13, pendingBytesLimit_);
+    }
     if (endpoint_ != null) {
       output.writeMessage(15, getEndpoint());
     }
@@ -301,6 +343,18 @@ private static final long serialVersionUID = 0L;
     if (ackTimeout_ != null) {
       size += com.google.protobuf.CodedOutputStream
         .computeMessageSize(10, getAckTimeout());
+    }
+    if (pullMaxWaiting_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(11, pullMaxWaiting_);
+    }
+    if (pendingMsgLimit_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(12, pendingMsgLimit_);
+    }
+    if (pendingBytesLimit_ != 0L) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt64Size(13, pendingBytesLimit_);
     }
     if (endpoint_ != null) {
       size += com.google.protobuf.CodedOutputStream
@@ -336,6 +390,12 @@ private static final long serialVersionUID = 0L;
       if (!getAckTimeout()
           .equals(other.getAckTimeout())) return false;
     }
+    if (getPullMaxWaiting()
+        != other.getPullMaxWaiting()) return false;
+    if (getPendingMsgLimit()
+        != other.getPendingMsgLimit()) return false;
+    if (getPendingBytesLimit()
+        != other.getPendingBytesLimit()) return false;
     if (hasEndpoint() != other.hasEndpoint()) return false;
     if (hasEndpoint()) {
       if (!getEndpoint()
@@ -368,6 +428,15 @@ private static final long serialVersionUID = 0L;
       hash = (37 * hash) + ACK_TIMEOUT_FIELD_NUMBER;
       hash = (53 * hash) + getAckTimeout().hashCode();
     }
+    hash = (37 * hash) + PULL_MAX_WAITING_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getPullMaxWaiting());
+    hash = (37 * hash) + PENDING_MSG_LIMIT_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getPendingMsgLimit());
+    hash = (37 * hash) + PENDING_BYTES_LIMIT_FIELD_NUMBER;
+    hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+        getPendingBytesLimit());
     if (hasEndpoint()) {
       hash = (37 * hash) + ENDPOINT_FIELD_NUMBER;
       hash = (53 * hash) + getEndpoint().hashCode();
@@ -511,6 +580,9 @@ private static final long serialVersionUID = 0L;
         ackTimeoutBuilder_.dispose();
         ackTimeoutBuilder_ = null;
       }
+      pullMaxWaiting_ = 0L;
+      pendingMsgLimit_ = 0L;
+      pendingBytesLimit_ = 0L;
       endpoint_ = null;
       if (endpointBuilder_ != null) {
         endpointBuilder_.dispose();
@@ -570,6 +642,15 @@ private static final long serialVersionUID = 0L;
             : ackTimeoutBuilder_.build();
       }
       if (((from_bitField0_ & 0x00000040) != 0)) {
+        result.pullMaxWaiting_ = pullMaxWaiting_;
+      }
+      if (((from_bitField0_ & 0x00000080) != 0)) {
+        result.pendingMsgLimit_ = pendingMsgLimit_;
+      }
+      if (((from_bitField0_ & 0x00000100) != 0)) {
+        result.pendingBytesLimit_ = pendingBytesLimit_;
+      }
+      if (((from_bitField0_ & 0x00000200) != 0)) {
         result.endpoint_ = endpointBuilder_ == null
             ? endpoint_
             : endpointBuilder_.build();
@@ -644,6 +725,15 @@ private static final long serialVersionUID = 0L;
       if (other.hasAckTimeout()) {
         mergeAckTimeout(other.getAckTimeout());
       }
+      if (other.getPullMaxWaiting() != 0L) {
+        setPullMaxWaiting(other.getPullMaxWaiting());
+      }
+      if (other.getPendingMsgLimit() != 0L) {
+        setPendingMsgLimit(other.getPendingMsgLimit());
+      }
+      if (other.getPendingBytesLimit() != 0L) {
+        setPendingBytesLimit(other.getPendingBytesLimit());
+      }
       if (other.hasEndpoint()) {
         mergeEndpoint(other.getEndpoint());
       }
@@ -705,11 +795,26 @@ private static final long serialVersionUID = 0L;
               bitField0_ |= 0x00000020;
               break;
             } // case 82
+            case 88: {
+              pullMaxWaiting_ = input.readInt64();
+              bitField0_ |= 0x00000040;
+              break;
+            } // case 88
+            case 96: {
+              pendingMsgLimit_ = input.readInt64();
+              bitField0_ |= 0x00000080;
+              break;
+            } // case 96
+            case 104: {
+              pendingBytesLimit_ = input.readInt64();
+              bitField0_ |= 0x00000100;
+              break;
+            } // case 104
             case 122: {
               input.readMessage(
                   getEndpointFieldBuilder().getBuilder(),
                   extensionRegistry);
-              bitField0_ |= 0x00000040;
+              bitField0_ |= 0x00000200;
               break;
             } // case 122
             default: {
@@ -1128,6 +1233,102 @@ private static final long serialVersionUID = 0L;
       return ackTimeoutBuilder_;
     }
 
+    private long pullMaxWaiting_ ;
+    /**
+     * <code>int64 pull_max_waiting = 11;</code>
+     * @return The pullMaxWaiting.
+     */
+    @java.lang.Override
+    public long getPullMaxWaiting() {
+      return pullMaxWaiting_;
+    }
+    /**
+     * <code>int64 pull_max_waiting = 11;</code>
+     * @param value The pullMaxWaiting to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPullMaxWaiting(long value) {
+      
+      pullMaxWaiting_ = value;
+      bitField0_ |= 0x00000040;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 pull_max_waiting = 11;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPullMaxWaiting() {
+      bitField0_ = (bitField0_ & ~0x00000040);
+      pullMaxWaiting_ = 0L;
+      onChanged();
+      return this;
+    }
+
+    private long pendingMsgLimit_ ;
+    /**
+     * <code>int64 pending_msg_limit = 12;</code>
+     * @return The pendingMsgLimit.
+     */
+    @java.lang.Override
+    public long getPendingMsgLimit() {
+      return pendingMsgLimit_;
+    }
+    /**
+     * <code>int64 pending_msg_limit = 12;</code>
+     * @param value The pendingMsgLimit to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPendingMsgLimit(long value) {
+      
+      pendingMsgLimit_ = value;
+      bitField0_ |= 0x00000080;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 pending_msg_limit = 12;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPendingMsgLimit() {
+      bitField0_ = (bitField0_ & ~0x00000080);
+      pendingMsgLimit_ = 0L;
+      onChanged();
+      return this;
+    }
+
+    private long pendingBytesLimit_ ;
+    /**
+     * <code>int64 pending_bytes_limit = 13;</code>
+     * @return The pendingBytesLimit.
+     */
+    @java.lang.Override
+    public long getPendingBytesLimit() {
+      return pendingBytesLimit_;
+    }
+    /**
+     * <code>int64 pending_bytes_limit = 13;</code>
+     * @param value The pendingBytesLimit to set.
+     * @return This builder for chaining.
+     */
+    public Builder setPendingBytesLimit(long value) {
+      
+      pendingBytesLimit_ = value;
+      bitField0_ |= 0x00000100;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int64 pending_bytes_limit = 13;</code>
+     * @return This builder for chaining.
+     */
+    public Builder clearPendingBytesLimit() {
+      bitField0_ = (bitField0_ & ~0x00000100);
+      pendingBytesLimit_ = 0L;
+      onChanged();
+      return this;
+    }
+
     private io.ncraft.ncraft.messaging.PushEndpoint endpoint_;
     private com.google.protobuf.SingleFieldBuilderV3<
         io.ncraft.ncraft.messaging.PushEndpoint, io.ncraft.ncraft.messaging.PushEndpoint.Builder, io.ncraft.ncraft.messaging.PushEndpointOrBuilder> endpointBuilder_;
@@ -1136,7 +1337,7 @@ private static final long serialVersionUID = 0L;
      * @return Whether the endpoint field is set.
      */
     public boolean hasEndpoint() {
-      return ((bitField0_ & 0x00000040) != 0);
+      return ((bitField0_ & 0x00000200) != 0);
     }
     /**
      * <code>.ncraft.messaging.PushEndpoint endpoint = 15;</code>
@@ -1161,7 +1362,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endpointBuilder_.setMessage(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -1175,7 +1376,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endpointBuilder_.setMessage(builderForValue.build());
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -1184,7 +1385,7 @@ private static final long serialVersionUID = 0L;
      */
     public Builder mergeEndpoint(io.ncraft.ncraft.messaging.PushEndpoint value) {
       if (endpointBuilder_ == null) {
-        if (((bitField0_ & 0x00000040) != 0) &&
+        if (((bitField0_ & 0x00000200) != 0) &&
           endpoint_ != null &&
           endpoint_ != io.ncraft.ncraft.messaging.PushEndpoint.getDefaultInstance()) {
           getEndpointBuilder().mergeFrom(value);
@@ -1194,7 +1395,7 @@ private static final long serialVersionUID = 0L;
       } else {
         endpointBuilder_.mergeFrom(value);
       }
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000200;
       onChanged();
       return this;
     }
@@ -1202,7 +1403,7 @@ private static final long serialVersionUID = 0L;
      * <code>.ncraft.messaging.PushEndpoint endpoint = 15;</code>
      */
     public Builder clearEndpoint() {
-      bitField0_ = (bitField0_ & ~0x00000040);
+      bitField0_ = (bitField0_ & ~0x00000200);
       endpoint_ = null;
       if (endpointBuilder_ != null) {
         endpointBuilder_.dispose();
@@ -1215,7 +1416,7 @@ private static final long serialVersionUID = 0L;
      * <code>.ncraft.messaging.PushEndpoint endpoint = 15;</code>
      */
     public io.ncraft.ncraft.messaging.PushEndpoint.Builder getEndpointBuilder() {
-      bitField0_ |= 0x00000040;
+      bitField0_ |= 0x00000200;
       onChanged();
       return getEndpointFieldBuilder().getBuilder();
     }
