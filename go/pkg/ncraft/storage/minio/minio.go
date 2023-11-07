@@ -3,13 +3,15 @@ package minio
 import (
     "bytes"
     "fmt"
-    "github.com/minio/minio-go"
-    "github.com/mojo-lang/core/go/pkg/mojo/core"
-    "github.com/ncraft-io/ncraft/go/pkg/ncraft/logs"
-    "github.com/ncraft-io/ncraft/go/pkg/ncraft/storage"
-    "github.com/pkg/errors"
     "io"
     "strings"
+
+    "github.com/minio/minio-go"
+    "github.com/mojo-lang/core/go/pkg/mojo/core"
+    "github.com/pkg/errors"
+
+    "github.com/ncraft-io/ncraft/go/pkg/ncraft/logs"
+    "github.com/ncraft-io/ncraft/go/pkg/ncraft/storage"
 )
 
 func init() {
@@ -59,6 +61,7 @@ func (m *Minio) SetBucket(name string) error {
 
 func (m *Minio) Read(key string, options core.Options) (*storage.Object, error) {
     obj, err := m.client.GetObject(m.bucketName, key, minio.GetObjectOptions{})
+    defer obj.Close()
     if err != nil {
         errResponse := &minio.ErrorResponse{}
         if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" && strings.HasPrefix(key, "/") {
@@ -69,6 +72,7 @@ func (m *Minio) Read(key string, options core.Options) (*storage.Object, error) 
                 key = key[pos:]
             }
             if obj, err = m.client.GetObject(bucketName, key, minio.GetObjectOptions{}); err != nil {
+                defer obj.Close()
                 if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" {
                     return nil, core.NewNotFoundError("failed to found the key %s", key)
                 }
