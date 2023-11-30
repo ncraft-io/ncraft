@@ -240,19 +240,27 @@ func (n *Nats) Subscribe(opts *messaging.Subscription, h messaging.Handler) {
 
 		msg.SetAck(func() {
 			err := m.Ack()
-			logs.Warnw("Nats: failed to Ack", "topic", opts.Topic, "error", err)
+			if err != nil {
+				logs.Warnw("Nats: failed to Ack", "topic", opts.Topic, "error", err)
+			}
 		})
 		msg.SetNak(func() {
 			err := m.Nak()
-			logs.Warnw("Nats: failed to Nak", "topic", opts.Topic, "error", err)
+			if err != nil {
+				logs.Warnw("Nats: failed to Nak", "topic", opts.Topic, "error", err)
+			}
 		})
 		msg.SetTerm(func() {
 			err := m.Term()
-			logs.Warnw("Nats: failed to Term", "topic", opts.Topic, "error", err)
+			if err != nil {
+				logs.Warnw("Nats: failed to Term", "topic", opts.Topic, "error", err)
+			}
 		})
 		msg.SetInProgress(func() {
 			err := m.InProgress()
-			logs.Warnw("Nats: failed to InProgress", "topic", opts.Topic, "error", err)
+			if err != nil {
+				logs.Warnw("Nats: failed to InProgress", "topic", opts.Topic, "error", err)
+			}
 		})
 
 		err := h(context.Background(), opts, msg)
@@ -392,5 +400,4 @@ func (n *Nats) Shutdown() {
 	n.conn.Close()
 	close(n.shutdownCh)
 	n.shutdown = true
-	return
 }
