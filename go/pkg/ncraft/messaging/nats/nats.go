@@ -55,6 +55,7 @@ func New(config *messaging.Config) (*Nats, error) {
 		n := &Nats{
 			conn:          nc,
 			id:            "",
+			config:        config,
 			subscriptions: map[string]*nats.Subscription{},
 		}
 
