@@ -1,0 +1,3 @@
+package http
+
+type ErrorWrappedEnvelopedResponse EnvelopedResponse

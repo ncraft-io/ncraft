@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 	"time"
+	"encoding/json"
 
 	simple "github.com/bitly/go-simplejson"
 	"github.com/fatih/structs"
@@ -231,7 +232,11 @@ func (j *jsonValue) Scan(v interface{}) error {
 		return nil
 	}
 
-	return jsoniter.Unmarshal(b, v)
+	if m, ok  := v.(map[string]interface{}); ok {
+		return json.Unmarshal(b, &m)
+	} else {
+		return jsoniter.Unmarshal(b, v)
+	}
 }
 
 func (j *jsonValue) Bytes() []byte {
