@@ -3,9 +3,9 @@ package sd
 import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/sd"
-	"github.com/ncraft-io/ncraft/gokit/pkg/sd/direct"
-	"github.com/ncraft-io/ncraft/gokit/pkg/sd/etcdv3"
-	"github.com/ncraft-io/ncraft/gokit/pkg/sd/nacos"
+	"github.com/ncraft-io/ncraft/go/pkg/gokit/sd/direct"
+	"github.com/ncraft-io/ncraft/go/pkg/gokit/sd/etcdv3"
+	"github.com/ncraft-io/ncraft/go/pkg/gokit/sd/nacos"
 	"strings"
 )
 

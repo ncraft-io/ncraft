@@ -1,106 +1,107 @@
 package flag
 
 import (
-    "errors"
-    "flag"
-    "github.com/imdario/mergo"
-    "github.com/mojo-lang/core/go/pkg/mojo/core/strcase"
-    source2 "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
-    "strings"
-    "time"
+	"errors"
+	"flag"
+	"github.com/imdario/mergo"
+	"github.com/mojo-lang/mojo/go/pkg/mojo/core/strcase"
+	source2 "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
+	"strings"
+	"time"
 )
 
 type flagsrc struct {
-    opts source2.Options
+	opts source2.Options
 }
 
 func (fs *flagsrc) Read() (*source2.ChangeSet, error) {
-    if !flag.Parsed() {
-        return nil, errors.New("flags not parsed")
-    }
+	if !flag.Parsed() {
+		return nil, errors.New("flags not parsed")
+	}
 
-    var changes map[string]interface{}
+	var changes map[string]interface{}
 
-    visitFn := func(f *flag.Flag) {
-        n := f.Name // strings.ToLower(f.Name)
-        keys := strings.FieldsFunc(n, split)
-        for i, k := range keys {
-            keys[i] = strcase.ToLowerCamel(k)
-        }
+	visitFn := func(f *flag.Flag) {
+		n := f.Name // strings.ToLower(f.Name)
+		keys := strings.FieldsFunc(n, split)
+		for i, k := range keys {
+			keys[i] = strcase.ToLowerCamel(k)
+		}
 
-        reverse(keys)
+		reverse(keys)
 
-        tmp := make(map[string]interface{})
-        for i, k := range keys {
-            if i == 0 {
-                tmp[k] = f.Value
-                continue
-            }
+		tmp := make(map[string]interface{})
+		for i, k := range keys {
+			if i == 0 {
+				tmp[k] = f.Value
+				continue
+			}
 
-            tmp = map[string]interface{}{k: tmp}
-        }
+			tmp = map[string]interface{}{k: tmp}
+		}
 
-        mergo.Map(&changes, tmp) // need to sort error handling
-        return
-    }
+		mergo.Map(&changes, tmp) // need to sort error handling
+		return
+	}
 
-    unset, ok := fs.opts.Context.Value(includeUnsetKey{}).(bool)
-    if ok && unset {
-        flag.VisitAll(visitFn)
-    } else {
-        flag.Visit(visitFn)
-    }
+	unset, ok := fs.opts.Context.Value(includeUnsetKey{}).(bool)
+	if ok && unset {
+		flag.VisitAll(visitFn)
+	} else {
+		flag.Visit(visitFn)
+	}
 
-    b, err := fs.opts.Encoder.Encode(changes)
-    if err != nil {
-        return nil, err
-    }
+	b, err := fs.opts.Encoder.Encode(changes)
+	if err != nil {
+		return nil, err
+	}
 
-    cs := &source2.ChangeSet{
-        Format:    fs.opts.Encoder.String(),
-        Data:      b,
-        Timestamp: time.Now(),
-        Source:    fs.String(),
-    }
-    cs.Checksum = cs.Sum()
+	cs := &source2.ChangeSet{
+		Format:    fs.opts.Encoder.String(),
+		Data:      b,
+		Timestamp: time.Now(),
+		Source:    fs.String(),
+	}
+	cs.Checksum = cs.Sum()
 
-    return cs, nil
+	return cs, nil
 }
 
 func split(r rune) bool {
-    return r == '-' || r == '.'
+	return r == '-' || r == '.'
 }
 
 func reverse(ss []string) {
-    for i := len(ss)/2 - 1; i >= 0; i-- {
-        opp := len(ss) - 1 - i
-        ss[i], ss[opp] = ss[opp], ss[i]
-    }
+	for i := len(ss)/2 - 1; i >= 0; i-- {
+		opp := len(ss) - 1 - i
+		ss[i], ss[opp] = ss[opp], ss[i]
+	}
 }
 
 func (fs *flagsrc) Watch() (source2.Watcher, error) {
-    return source2.NewNoopWatcher()
+	return source2.NewNoopWatcher()
 }
 
 func (fs *flagsrc) Write(cs *source2.ChangeSet) error {
-    return nil
+	return nil
 }
 
 func (fs *flagsrc) String() string {
-    return "flag"
+	return "flag"
 }
 
 // NewSource returns a config source for integrating parsed flags.
 // Hyphens are delimiters for nesting, and all keys are lowercased.
 //
 // Example:
-//      dbhost := flag.String("database-host", "localhost", "the db host name")
 //
-//      {
-//          "database": {
-//              "host": "localhost"
-//          }
-//      }
+//	dbhost := flag.String("database-host", "localhost", "the db host name")
+//
+//	{
+//	    "database": {
+//	        "host": "localhost"
+//	    }
+//	}
 func NewSource(opts ...source2.Option) source2.Source {
-    return &flagsrc{opts: source2.NewOptions(opts...)}
+	return &flagsrc{opts: source2.NewOptions(opts...)}
 }

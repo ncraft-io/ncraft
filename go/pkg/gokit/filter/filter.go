@@ -1,8 +1,8 @@
 package filter
 
 import (
-	"github.com/mojo-lang/lang/go/pkg/mojo/lang"
-	"github.com/mojo-lang/mojo/go/pkg/mojo/parser/syntax"
+	"github.com/mojo-lang/mojo/go/pkg/compiler/mojo/parser/syntax"
+	"github.com/mojo-lang/mojo/go/pkg/mojo/lang"
 	"gorm.io/gorm/clause"
 )
 

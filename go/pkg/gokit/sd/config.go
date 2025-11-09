@@ -1,15 +1,14 @@
 package sd
 
 import (
+	"github.com/ncraft-io/ncraft/go/pkg/gokit/retry"
+	"github.com/ncraft-io/ncraft/go/pkg/gokit/sd/direct"
+	"github.com/ncraft-io/ncraft/go/pkg/gokit/sd/etcdv3"
+	"github.com/ncraft-io/ncraft/go/pkg/gokit/sd/nacos"
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config"
 	"strings"
 
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/logs"
-
-	"github.com/ncraft-io/ncraft/gokit/pkg/retry"
-	"github.com/ncraft-io/ncraft/gokit/pkg/sd/direct"
-	"github.com/ncraft-io/ncraft/gokit/pkg/sd/etcdv3"
-	"github.com/ncraft-io/ncraft/gokit/pkg/sd/nacos"
 )
 
 type Config struct {

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/go-kit/kit/metrics"
-	"github.com/mojo-lang/core/go/pkg/mojo/core"
-	"github.com/ncraft-io/ncraft/gokit/pkg/counter"
+	"github.com/mojo-lang/mojo/go/pkg/mojo/core"
+	"github.com/ncraft-io/ncraft/go/pkg/gokit/counter"
 	"time"
 )
 

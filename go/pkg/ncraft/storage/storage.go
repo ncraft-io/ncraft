@@ -7,7 +7,7 @@ import (
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config"
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/logs"
 
-	"github.com/mojo-lang/core/go/pkg/mojo/core"
+	"github.com/mojo-lang/mojo/go/pkg/mojo/core"
 )
 
 type initializer func(cfg *Config) Storage

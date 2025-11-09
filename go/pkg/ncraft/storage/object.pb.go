@@ -9,7 +9,7 @@
 package storage
 
 import (
-	core "github.com/mojo-lang/core/go/pkg/mojo/core"
+	core "github.com/mojo-lang/mojo/go/pkg/mojo/core"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

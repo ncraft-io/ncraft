@@ -1,7 +1,7 @@
 package logs
 
 import (
-	"github.com/mojo-lang/core/go/pkg/logs"
+	"github.com/mojo-lang/mojo/go/pkg/logs"
 )
 
 type Level = logs.Level

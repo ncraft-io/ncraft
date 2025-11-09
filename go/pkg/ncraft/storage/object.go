@@ -5,7 +5,7 @@ import (
 	"fmt"
 	gohttp "net/http"
 
-	"github.com/mojo-lang/http/go/pkg/mojo/http"
+	"github.com/mojo-lang/mojo/go/pkg/mojo/http"
 )
 
 func (x *Object) GetHttpHeaders() *http.Headers {

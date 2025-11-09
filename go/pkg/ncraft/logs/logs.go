@@ -5,7 +5,7 @@ import (
 	"fmt"
 	_ "unsafe"
 
-	"github.com/mojo-lang/core/go/pkg/logs"
+	"github.com/mojo-lang/mojo/go/pkg/logs"
 
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config"
 )

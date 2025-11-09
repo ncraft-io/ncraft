@@ -1,11 +1,11 @@
 package client
 
 import (
+	"github.com/ncraft-io/ncraft/go/pkg/gokit/sd"
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config"
 	"strings"
 
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/logs"
-	"github.com/ncraft-io/ncraft/gokit/pkg/sd"
 )
 
 type Config struct {
