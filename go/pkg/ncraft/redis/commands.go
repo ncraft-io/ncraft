@@ -3,6 +3,7 @@ package redis
 import (
 	"context"
 	"errors"
+	"time"
 )
 
 func Get(redis Redis, key string) (string, error) {
@@ -14,8 +15,16 @@ func Get(redis Redis, key string) (string, error) {
 
 func Set(redis Redis, key string, value string) (string, error) {
 	if redis != nil {
-		redis.Do(context.Background(), "SET", key, value)
-		return "", nil
+		_, err := redis.Do(context.Background(), "SET", key, value)
+		return "", err
+	}
+	return "", errors.New("the redis handler is nil")
+}
+
+func SetEx(redis Redis, key string, value string, duration time.Duration) (string, error) {
+	if redis != nil {
+		_, err := redis.Do(context.Background(), "SETEX", key, int(duration.Seconds()), value)
+		return "", err
 	}
 	return "", errors.New("the redis handler is nil")
 }

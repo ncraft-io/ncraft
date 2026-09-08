@@ -2,8 +2,6 @@ module github.com/ncraft-io/ncraft/go
 
 go 1.24.7
 
-// replace github.com/mojo-lang/mojo/go => ../../../Mojo/mojo/go
-
 require (
 	github.com/BurntSushi/toml v1.0.0
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.7+incompatible
@@ -21,6 +19,7 @@ require (
 	github.com/imdario/mergo v0.3.12
 	github.com/json-iterator/go v1.1.12
 	github.com/minio/minio-go v6.0.14+incompatible
+	github.com/mojo-lang/mojo/go v0.0.0-20251109082603-589338c8d9d8
 	github.com/mr-tron/base58 v1.2.0
 	github.com/nacos-group/nacos-sdk-go/v2 v2.2.7
 	github.com/nats-io/nats.go v1.30.2
@@ -91,7 +90,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
-	github.com/mojo-lang/mojo/go v0.0.0-20251109082603-589338c8d9d8 // indirect
 	github.com/nats-io/nats-server/v2 v2.9.23 // indirect
 	github.com/nats-io/nkeys v0.4.6 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
