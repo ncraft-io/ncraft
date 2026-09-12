@@ -24,7 +24,7 @@ type Config struct {
 
 func NewConfig(path ...string) *Config {
 	cfg := &Config{}
-	if err := config.NcraftGet("sd").Scan(cfg); err != nil {
+	if err := config.NcraftGet("sd", path...).Scan(cfg); err != nil {
 		logs.Errorw("failed to get the ncraft.sd config from "+strings.Join(path, "."), "error", err)
 		return nil
 	}

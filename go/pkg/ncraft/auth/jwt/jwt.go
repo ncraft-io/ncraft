@@ -2,6 +2,7 @@ package jwt
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
 
@@ -16,11 +17,11 @@ type JWT struct {
 	Exceptions []*UrlPath
 }
 
-func NewJWT() *JWT {
+func NewJWT(path ...string) *JWT {
 	cfg := &Config{}
 
-	if err := config.NcraftGet("jwt").Scan(cfg); err != nil {
-		logs.Warnw("failed to get the ncraft.jwt config", "error", err)
+	if err := config.NcraftGet("jwt", path...).Scan(cfg); err != nil {
+		logs.Warnw("failed to get the ncraft.jwt config from "+strings.Join(path, "."), "error", err)
 		return nil
 	}
 

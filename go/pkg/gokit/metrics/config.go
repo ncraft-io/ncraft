@@ -23,7 +23,7 @@ func (c *Config) Enabled() bool {
 func NewConfig(path ...string) *Config {
 	cfg := &Config{}
 
-	if err := config.NcraftGet("metrics").Scan(cfg); err != nil {
+	if err := config.NcraftGet("metrics", path...).Scan(cfg); err != nil {
 		logs.Warnw("failed to get the ncraft.metrics config from ", "path", strings.Join(path, "."), "error", err)
 		return nil
 	}

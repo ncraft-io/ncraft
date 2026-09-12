@@ -15,7 +15,7 @@ type Config struct {
 
 func NewConfig(path ...string) *Config {
 	cfg := &Config{}
-	if err := config.NcraftGet("retry").Scan(cfg); err != nil {
+	if err := config.NcraftGet("retry", path...).Scan(cfg); err != nil {
 		logs.Errorw("failed to get the ncraft.retry config from "+strings.Join(path, "."), "error", err)
 		return nil
 	}

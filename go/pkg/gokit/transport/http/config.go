@@ -36,7 +36,7 @@ func (c *Config) GetEnvelop() *EnvelopeConfig {
 
 func NewConfig(path ...string) *Config {
 	cfg := &Config{}
-	if err := config.NcraftGet("transport.http").Scan(cfg); err != nil {
+	if err := config.NcraftGet("transport.http", path...).Scan(cfg); err != nil {
 		logs.Errorw("failed to get the ncraft.http.transport config.", "path", strings.Join(path, "."), "error", err)
 		return nil
 	}

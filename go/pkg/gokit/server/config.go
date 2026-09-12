@@ -22,7 +22,7 @@ type Config struct {
 
 func NewConfig(path ...string) *Config {
 	cfg := &Config{}
-	err := config.NcraftGet("server").Scan(cfg)
+	err := config.NcraftGet("server", path...).Scan(cfg)
 	if err != nil {
 		logs.Errorw("failed to get the ncraft.server config from "+strings.Join(path, "."), "error", err)
 		return nil
