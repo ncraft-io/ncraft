@@ -4,7 +4,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/imdario/mergo"
+	"dario.cat/mergo"
 
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config/encoder"
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config/encoder/json"

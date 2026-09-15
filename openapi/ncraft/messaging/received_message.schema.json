@@ -1,6 +1,7 @@
 {
     "title": "ncraft.messaging.ReceivedMessage",
     "description": "",
+    "type": "object",
     "allOf": [
         {
             "$ref": "#/components/schemas/ncraft.messaging.Message"

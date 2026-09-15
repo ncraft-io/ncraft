@@ -1,7 +1,10 @@
 package storage
 
 import (
+	"context"
 	"errors"
+	"fmt"
+	"io"
 	"sync"
 
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config"
@@ -11,16 +14,34 @@ import (
 )
 
 type initializer func(cfg *Config) Storage
+type ContextInitializer func(context.Context, *Config) (Storage, error)
 
-var initializers map[string]initializer
-var initializersOnce sync.Once
+var initializers = make(map[string]ContextInitializer)
+var initializersMu sync.RWMutex
 
+// Register preserves support for backends using the original constructor.
 func Register(name string, init initializer) {
-	initializersOnce.Do(func() {
-		initializers = make(map[string]initializer)
+	RegisterWithContext(name, func(_ context.Context, cfg *Config) (Storage, error) {
+		backend := init(cfg)
+		if backend == nil {
+			return nil, fmt.Errorf("initialize storage vendor %q", name)
+		}
+		return backend, nil
 	})
+}
 
+func RegisterWithContext(name string, init ContextInitializer) {
+	initializersMu.Lock()
+	defer initializersMu.Unlock()
 	initializers[name] = init
+}
+
+// StreamingStorage adds cancellable, seekable reads without changing Storage.
+// Callers must close the returned reader; metadata does not contain file bytes.
+type StreamingStorage interface {
+	Storage
+	Open(context.Context, string) (io.ReadSeekCloser, *Object, error)
+	WriteContext(context.Context, *Object, core.Options) error
 }
 
 type Storage interface {
@@ -35,18 +56,44 @@ type Storage interface {
 }
 
 func NewStorage(cfg *Config) Storage {
-	if init, ok := initializers[cfg.Vendor]; ok {
-		return init(cfg)
+	backend, err := NewStorageWithContext(context.Background(), cfg)
+	if err != nil {
+		return nil
 	}
-	return nil
+	return backend
+}
+
+func NewStorageWithContext(ctx context.Context, cfg *Config) (Storage, error) {
+	if cfg == nil {
+		return nil, errors.New("storage configuration is required")
+	}
+	vendor := cfg.Vendor
+	if vendor == "" {
+		vendor = "minio"
+	}
+	initializersMu.RLock()
+	init := initializers[vendor]
+	initializersMu.RUnlock()
+	if init == nil {
+		return nil, fmt.Errorf("unsupported storage vendor %q", vendor)
+	}
+	backend, err := init(ctx, cfg)
+	if err != nil {
+		return nil, err
+	}
+	if backend == nil {
+		return nil, fmt.Errorf("storage vendor %q returned no backend", vendor)
+	}
+	return backend, nil
 }
 
 var storage Storage
+var storageOnce sync.Once
 
 func GetStorage() Storage {
-	(&sync.Once{}).Do(func() {
+	storageOnce.Do(func() {
 		conf := &Config{}
-		if err := config.ScanFrom(conf, "ncraft.storage", "storage"); err != nil {
+		if err := config.NcraftGet("storage").Scan(conf); err != nil {
 			logs.Warnw("failed to get the server config", "error", err.Error())
 			storage = NewDummyStorage()
 		} else {

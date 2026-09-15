@@ -1,141 +1,238 @@
+// Package minio implements MinIO and S3-compatible object storage.
 package minio
 
 import (
 	"bytes"
+	"context"
+	"errors"
 	"fmt"
 	"io"
+	"net/url"
 	"strings"
+	"sync"
 
-	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/minio/minio-go/v7/pkg/s3utils"
 	"github.com/mojo-lang/mojo/go/pkg/mojo/core"
-	"github.com/pkg/errors"
-
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/logs"
 	"github.com/ncraft-io/ncraft/go/pkg/ncraft/storage"
 )
 
 func init() {
-	storage.Register("minio", NewMinio)
+	constructor := func(ctx context.Context, cfg *storage.Config) (storage.Storage, error) { return New(ctx, cfg) }
+	storage.RegisterWithContext("minio", constructor)
+	storage.RegisterWithContext("s3", constructor)
 }
+
+var _ storage.StreamingStorage = (*Minio)(nil)
 
 type Minio struct {
 	client     *minio.Client
+	mu         sync.RWMutex
 	bucketName string
+	region     string
+	prefix     string
 }
 
+// NewMinio preserves the original constructor for existing callers.
 func NewMinio(cfg *storage.Config) storage.Storage {
-	m := &Minio{}
-
-	if client, err := minio.New(cfg.Endpoint, cfg.AccessKey, cfg.SecretKey, false); err != nil {
-		logs.Errorw(fmt.Sprintf("failed to minio connect %s", cfg.Endpoint), "error", err)
-		return nil
-	} else {
-		m.client = client
-	}
-
-	if err := m.SetBucket(cfg.BucketName); err != nil {
-		logs.Errorw(err.Error())
+	backend, err := New(context.Background(), cfg)
+	if err != nil {
+		logs.Errorw("failed to initialize minio storage", "error", err)
 		return nil
 	}
+	return backend
+}
 
-	return m
+// New initializes a reusable S3 client and returns configuration/bucket errors.
+func New(ctx context.Context, cfg *storage.Config) (*Minio, error) {
+	if cfg == nil {
+		return nil, errors.New("storage configuration is required")
+	}
+	if err := s3utils.CheckValidBucketNameStrict(cfg.BucketName); err != nil {
+		return nil, fmt.Errorf("invalid storage bucketName: %w", err)
+	}
+	endpoint := strings.TrimSpace(cfg.Endpoint)
+	if endpoint == "" {
+		return nil, errors.New("storage endpoint is required")
+	}
+	secure := cfg.Secure != nil && *cfg.Secure
+	if strings.Contains(endpoint, "://") {
+		u, err := url.Parse(endpoint)
+		if err != nil || (u.Scheme != "http" && u.Scheme != "https") || u.Host == "" || u.User != nil || (u.Path != "" && u.Path != "/") || u.RawQuery != "" || u.Fragment != "" {
+			return nil, errors.New("storage endpoint must be an HTTP(S) origin without credentials, path or query")
+		}
+		endpoint, secure = u.Host, u.Scheme == "https"
+	}
+	prefix := strings.Trim(cfg.Prefix, "/")
+	if prefix != "" {
+		prefix += "/"
+	}
+	if (cfg.AccessKey == "") != (cfg.SecretKey == "") {
+		return nil, errors.New("storage accessKey and secretKey must be configured together")
+	}
+	creds := credentials.NewStaticV4(cfg.AccessKey, cfg.SecretKey, cfg.SessionToken)
+	if cfg.AccessKey == "" {
+		if cfg.SessionToken != "" {
+			return nil, errors.New("storage sessionToken requires accessKey and secretKey")
+		}
+		creds = credentials.NewEnvAWS()
+	}
+	value, err := creds.Get()
+	if err != nil {
+		return nil, err
+	}
+	if value.AccessKeyID == "" || value.SecretAccessKey == "" {
+		return nil, errors.New("S3 credentials are required in config or AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY")
+	}
+	client, err := minio.New(endpoint, &minio.Options{Creds: creds, Secure: secure, Region: cfg.Region, BucketLookup: minio.BucketLookupPath})
+	if err != nil {
+		return nil, fmt.Errorf("initialize S3 client: %w", err)
+	}
+	m := &Minio{client: client, region: cfg.Region, prefix: prefix, bucketName: cfg.BucketName}
+	if cfg.CreateBucket == nil || *cfg.CreateBucket {
+		if err := m.ensureBucket(ctx, cfg.BucketName); err != nil {
+			return nil, err
+		}
+	}
+	return m, nil
 }
 
 func (m *Minio) BucketName() string {
+	m.mu.RLock()
+	defer m.mu.RUnlock()
 	return m.bucketName
 }
 
-func (m *Minio) SetBucket(name string) error {
-	if len(name) > 0 && name != m.bucketName {
-		if ok, err := m.client.BucketExists(name); err != nil {
-			return err
-		} else if !ok {
-			if err = m.client.MakeBucket(name, ""); err != nil {
-				return errors.Wrap(err, fmt.Sprintf("minio failed to create bucket %s", name))
-			}
+func (m *Minio) ensureBucket(ctx context.Context, name string) error {
+	exists, err := m.client.BucketExists(ctx, name)
+	if err != nil {
+		return fmt.Errorf("check S3 bucket: %w", err)
+	}
+	if !exists {
+		if err = m.client.MakeBucket(ctx, name, minio.MakeBucketOptions{Region: m.region}); err != nil && minio.ToErrorResponse(err).Code != "BucketAlreadyOwnedByYou" {
+			return fmt.Errorf("create S3 bucket: %w", err)
 		}
-		m.bucketName = name
 	}
 	return nil
 }
 
-func (m *Minio) Read(key string, options core.Options) (*storage.Object, error) {
-	obj, err := m.client.GetObject(m.bucketName, key, minio.GetObjectOptions{})
-	defer obj.Close()
-	if err != nil {
-		errResponse := &minio.ErrorResponse{}
-		if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" && strings.HasPrefix(key, "/") {
-			key = key[1:]
-			bucketName := m.bucketName
-			if pos := strings.Index(key, "/"); pos > 0 {
-				bucketName = key[0:pos]
-				key = key[pos:]
-			}
-			if obj, err = m.client.GetObject(bucketName, key, minio.GetObjectOptions{}); err != nil {
-				if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" {
-					return nil, core.NewNotFoundError("failed to found the key %s", key)
-				}
-				return nil, err
-			}
-		}
+func (m *Minio) SetBucket(name string) error {
+	if name == "" || name == m.BucketName() {
+		return nil
 	}
+	if err := s3utils.CheckValidBucketNameStrict(name); err != nil {
+		return err
+	}
+	if err := m.ensureBucket(context.Background(), name); err != nil {
+		return err
+	}
+	m.mu.Lock()
+	m.bucketName = name
+	m.mu.Unlock()
+	return nil
+}
 
+func (m *Minio) key(key string) (string, error) {
+	if key == "" {
+		return "", core.NewInvalidArgumentError("object key is required")
+	}
+	key = m.prefix + key
+	return key, s3utils.CheckValidObjectName(key)
+}
+
+// Open checks metadata first because GetObject defers network errors until use.
+func (m *Minio) Open(ctx context.Context, key string) (io.ReadSeekCloser, *storage.Object, error) {
+	objectKey, err := m.key(key)
+	if err != nil {
+		return nil, nil, err
+	}
+	obj, err := m.client.GetObject(ctx, m.BucketName(), objectKey, minio.GetObjectOptions{})
+	if err != nil {
+		return nil, nil, objectError(err, key)
+	}
 	info, err := obj.Stat()
 	if err != nil {
-		errResponse := &minio.ErrorResponse{}
-		if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" {
-			return nil, core.NewNotFoundError("failed to found the key %s", key)
-		}
+		obj.Close()
+		return nil, nil, objectError(err, key)
+	}
+	metadata := &storage.Object{Key: key, Etag: info.ETag, Size: info.Size, LastModified: core.FromTime(info.LastModified)}
+	if info.ContentType != "" {
+		metadata.ContentType, _ = core.ParseMediaType(info.ContentType)
+	}
+	return obj, metadata, nil
+}
+
+func objectError(err error, key string) error {
+	if minio.ToErrorResponse(err).Code == "NoSuchKey" {
+		return core.NewNotFoundError("object %s not found", key)
+	}
+	return err
+}
+
+func (m *Minio) Read(key string, options core.Options) (*storage.Object, error) {
+	return m.ReadContext(context.Background(), key, options)
+}
+
+func (m *Minio) ReadContext(ctx context.Context, key string, options core.Options) (*storage.Object, error) {
+	reader, metadata, err := m.Open(ctx, key)
+	if err != nil {
 		return nil, err
 	}
-
-	object := &storage.Object{
-		Etag:         info.ETag,
-		Key:          info.Key,
-		LastModified: core.FromTime(info.LastModified),
-		Size:         info.Size,
+	defer reader.Close()
+	metadata.Content, err = io.ReadAll(reader)
+	if err != nil {
+		return nil, objectError(err, key)
 	}
-
-	if object.ContentType, err = core.ParseMediaType(info.ContentType); err != nil {
-		return nil, err
+	if int64(len(metadata.Content)) != metadata.Size {
+		return nil, io.ErrUnexpectedEOF
 	}
-
-	object.Content = make([]byte, info.Size)
-	if size, err := obj.Read(object.Content); (err != nil && err != io.EOF) || size != int(info.Size) {
-		return nil, errors.Errorf("failed to read the content from the minio object, error %s", err.Error())
-	}
-
-	return object, nil
+	return metadata, nil
 }
 
 func (m *Minio) Write(object *storage.Object, options core.Options) error {
-	_, err := m.client.PutObject(m.bucketName, object.Key, bytes.NewReader(object.Content), object.Size, minio.PutObjectOptions{})
+	return m.WriteContext(context.Background(), object, options)
+}
+
+func (m *Minio) WriteContext(ctx context.Context, object *storage.Object, options core.Options) error {
+	if object == nil {
+		return core.NewInvalidArgumentError("object is required")
+	}
+	key, err := m.key(object.Key)
+	if err != nil {
+		return err
+	}
+	opts := minio.PutObjectOptions{}
+	if object.ContentType != nil {
+		opts.ContentType = object.ContentType.Format()
+	}
+	// Derive the length from the bytes; stale caller metadata must not truncate uploads.
+	_, err = m.client.PutObject(ctx, m.BucketName(), key, bytes.NewReader(object.Content), int64(len(object.Content)), opts)
 	return err
 }
 
 func (m *Minio) Download(key string, path string, options core.Options) error {
-	if err := m.client.FGetObject(m.bucketName, key, path, minio.GetObjectOptions{}); err != nil {
-		errResponse := &minio.ErrorResponse{}
-		if errors.As(err, errResponse) && errResponse.Code == "NoSuchKey" && strings.HasPrefix(key, "/") {
-			key = key[1:]
-			bucketName := m.bucketName
-			if pos := strings.Index(key, "/"); pos > 0 {
-				bucketName = key[0:pos]
-				key = key[pos:]
-			}
-			if err = m.client.FGetObject(bucketName, key, path, minio.GetObjectOptions{}); err == nil {
-				return nil
-			}
-		}
+	return m.DownloadContext(context.Background(), key, path, options)
+}
 
-		return logs.NewErrorw("minio failed to download object", "key", key, "path", path, "error", err.Error())
+func (m *Minio) DownloadContext(ctx context.Context, key, path string, options core.Options) error {
+	objectKey, err := m.key(key)
+	if err != nil {
+		return err
 	}
-	return nil
+	return objectError(m.client.FGetObject(ctx, m.BucketName(), objectKey, path, minio.GetObjectOptions{}), key)
 }
 
 func (m *Minio) Upload(localFile string, key string, options core.Options) error {
-	if _, err := m.client.FPutObject(m.bucketName, key, localFile, minio.PutObjectOptions{}); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("minio failed to upload %s to %s", localFile, key))
+	return m.UploadContext(context.Background(), localFile, key, options)
+}
+
+func (m *Minio) UploadContext(ctx context.Context, localFile, key string, options core.Options) error {
+	objectKey, err := m.key(key)
+	if err != nil {
+		return err
 	}
-	return nil
+	_, err = m.client.FPutObject(ctx, m.BucketName(), objectKey, localFile, minio.PutObjectOptions{})
+	return err
 }

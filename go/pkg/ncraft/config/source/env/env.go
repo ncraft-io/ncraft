@@ -1,146 +1,147 @@
 package env
 
 import (
-    source2 "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
-    "os"
-    "strconv"
-    "strings"
-    "time"
+	source2 "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
+	"os"
+	"strconv"
+	"strings"
+	"time"
 
-    "github.com/imdario/mergo"
+	"dario.cat/mergo"
 )
 
 var (
-    DefaultPrefixes = []string{}
+	DefaultPrefixes = []string{}
 )
 
 type env struct {
-    prefixes         []string
-    strippedPrefixes []string
-    opts             source2.Options
+	prefixes         []string
+	strippedPrefixes []string
+	opts             source2.Options
 }
 
 func (e *env) Read() (*source2.ChangeSet, error) {
-    var changes map[string]interface{}
+	var changes map[string]interface{}
 
-    for _, env := range os.Environ() {
+	for _, env := range os.Environ() {
 
-        if len(e.prefixes) > 0 || len(e.strippedPrefixes) > 0 {
-            notFound := true
+		if len(e.prefixes) > 0 || len(e.strippedPrefixes) > 0 {
+			notFound := true
 
-            if _, ok := matchPrefix(e.prefixes, env); ok {
-                notFound = false
-            }
+			if _, ok := matchPrefix(e.prefixes, env); ok {
+				notFound = false
+			}
 
-            if match, ok := matchPrefix(e.strippedPrefixes, env); ok {
-                env = strings.TrimPrefix(env, match)
-                notFound = false
-            }
+			if match, ok := matchPrefix(e.strippedPrefixes, env); ok {
+				env = strings.TrimPrefix(env, match)
+				notFound = false
+			}
 
-            if notFound {
-                continue
-            }
-        }
+			if notFound {
+				continue
+			}
+		}
 
-        pair := strings.SplitN(env, "=", 2)
-        value := pair[1]
-        keys := strings.Split(strings.ToLower(pair[0]), "_")
-        reverse(keys)
+		pair := strings.SplitN(env, "=", 2)
+		value := pair[1]
+		keys := strings.Split(strings.ToLower(pair[0]), "_")
+		reverse(keys)
 
-        tmp := make(map[string]interface{})
-        for i, k := range keys {
-            if i == 0 {
-                if intValue, err := strconv.Atoi(value); err == nil {
-                    tmp[k] = intValue
-                } else if boolValue, err := strconv.ParseBool(value); err == nil {
-                    tmp[k] = boolValue
-                } else {
-                    tmp[k] = value
-                }
-                continue
-            }
+		tmp := make(map[string]interface{})
+		for i, k := range keys {
+			if i == 0 {
+				if intValue, err := strconv.Atoi(value); err == nil {
+					tmp[k] = intValue
+				} else if boolValue, err := strconv.ParseBool(value); err == nil {
+					tmp[k] = boolValue
+				} else {
+					tmp[k] = value
+				}
+				continue
+			}
 
-            tmp = map[string]interface{}{k: tmp}
-        }
+			tmp = map[string]interface{}{k: tmp}
+		}
 
-        if err := mergo.Map(&changes, tmp); err != nil {
-            return nil, err
-        }
-    }
+		if err := mergo.Map(&changes, tmp); err != nil {
+			return nil, err
+		}
+	}
 
-    b, err := e.opts.Encoder.Encode(changes)
-    if err != nil {
-        return nil, err
-    }
+	b, err := e.opts.Encoder.Encode(changes)
+	if err != nil {
+		return nil, err
+	}
 
-    cs := &source2.ChangeSet{
-        Format:    e.opts.Encoder.String(),
-        Data:      b,
-        Timestamp: time.Now(),
-        Source:    e.String(),
-    }
-    cs.Checksum = cs.Sum()
+	cs := &source2.ChangeSet{
+		Format:    e.opts.Encoder.String(),
+		Data:      b,
+		Timestamp: time.Now(),
+		Source:    e.String(),
+	}
+	cs.Checksum = cs.Sum()
 
-    return cs, nil
+	return cs, nil
 }
 
 func matchPrefix(pre []string, s string) (string, bool) {
-    for _, p := range pre {
-        if strings.HasPrefix(s, p) {
-            return p, true
-        }
-    }
+	for _, p := range pre {
+		if strings.HasPrefix(s, p) {
+			return p, true
+		}
+	}
 
-    return "", false
+	return "", false
 }
 
 func reverse(ss []string) {
-    for i := len(ss)/2 - 1; i >= 0; i-- {
-        opp := len(ss) - 1 - i
-        ss[i], ss[opp] = ss[opp], ss[i]
-    }
+	for i := len(ss)/2 - 1; i >= 0; i-- {
+		opp := len(ss) - 1 - i
+		ss[i], ss[opp] = ss[opp], ss[i]
+	}
 }
 
 func (e *env) Watch() (source2.Watcher, error) {
-    return newWatcher()
+	return newWatcher()
 }
 
 func (e *env) Write(cs *source2.ChangeSet) error {
-    return nil
+	return nil
 }
 
 func (e *env) String() string {
-    return "env"
+	return "env"
 }
 
 // NewSource returns a config source for parsing ENV variables.
 // Underscores are delimiters for nesting, and all keys are lowercased.
 //
 // Example:
-//      "DATABASE_SERVER_HOST=localhost" will convert to
 //
-//      {
-//          "database": {
-//              "server": {
-//                  "host": "localhost"
-//              }
-//          }
-//      }
+//	"DATABASE_SERVER_HOST=localhost" will convert to
+//
+//	{
+//	    "database": {
+//	        "server": {
+//	            "host": "localhost"
+//	        }
+//	    }
+//	}
 func NewSource(opts ...source2.Option) source2.Source {
-    options := source2.NewOptions(opts...)
+	options := source2.NewOptions(opts...)
 
-    var sp []string
-    var pre []string
-    if p, ok := options.Context.Value(strippedPrefixKey{}).([]string); ok {
-        sp = p
-    }
+	var sp []string
+	var pre []string
+	if p, ok := options.Context.Value(strippedPrefixKey{}).([]string); ok {
+		sp = p
+	}
 
-    if p, ok := options.Context.Value(prefixKey{}).([]string); ok {
-        pre = p
-    }
+	if p, ok := options.Context.Value(prefixKey{}).([]string); ok {
+		pre = p
+	}
 
-    if len(sp) > 0 || len(pre) > 0 {
-        pre = append(pre, DefaultPrefixes...)
-    }
-    return &env{prefixes: pre, strippedPrefixes: sp, opts: options}
+	if len(sp) > 0 || len(pre) > 0 {
+		pre = append(pre, DefaultPrefixes...)
+	}
+	return &env{prefixes: pre, strippedPrefixes: sp, opts: options}
 }

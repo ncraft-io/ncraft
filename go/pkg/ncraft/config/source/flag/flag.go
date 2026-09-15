@@ -1,9 +1,9 @@
 package flag
 
 import (
+	"dario.cat/mergo"
 	"errors"
 	"flag"
-	"github.com/imdario/mergo"
 	"github.com/mojo-lang/mojo/go/pkg/mojo/core/strcase"
 	source2 "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
 	"strings"
