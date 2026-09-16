@@ -18,16 +18,16 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/hashicorp/hcl v1.0.0
 	github.com/json-iterator/go v1.1.12
-	github.com/mojo-lang/mojo/go v0.0.0-20260915054206-2dbac2a196f3
+	github.com/mojo-lang/mojo/go v0.0.0-20260916062139-c72bd9775f54
 	github.com/mr-tron/base58 v1.3.0
 	github.com/nacos-group/nacos-sdk-go/v2 v2.3.5
-	github.com/nats-io/nats.go v1.30.2
+	github.com/nats-io/nats.go v1.53.1
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.12.1
-	github.com/uber/jaeger-client-go v2.25.0+incompatible
+	github.com/uber/jaeger-client-go v2.30.0+incompatible
 	github.com/uber/jaeger-lib v2.4.1+incompatible
-	go.etcd.io/bbolt v1.3.6
+	go.etcd.io/bbolt v1.5.0
 	golang.org/x/crypto v0.57.0
 	golang.org/x/time v0.16.0
 	google.golang.org/grpc v1.83.2
@@ -130,8 +130,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
-	github.com/nats-io/nats-server/v2 v2.9.23 // indirect
-	github.com/nats-io/nkeys v0.4.6 // indirect
+	github.com/nats-io/nkeys v0.4.15 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/ncruces/go-strftime v1.0.0 // indirect
 	github.com/oasdiff/yaml v0.1.1 // indirect
@@ -161,7 +160,7 @@ require (
 	go.etcd.io/etcd/api/v3 v3.5.0 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.0 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.0 // indirect
-	go.uber.org/atomic v1.10.0 // indirect
+	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.28.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect

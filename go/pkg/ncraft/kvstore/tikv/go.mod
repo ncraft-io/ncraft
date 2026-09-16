@@ -36,7 +36,7 @@ require (
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect
-	github.com/mojo-lang/mojo/go v0.0.0-20260915054206-2dbac2a196f3 // indirect
+	github.com/mojo-lang/mojo/go v0.0.0-20260916062139-c72bd9775f54 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/pingcap/errors v0.11.5-0.20201126102027-b0a155152ca3 // indirect
 	github.com/pingcap/kvproto v0.0.0-20210219095907-b2375dcc80ad // indirect

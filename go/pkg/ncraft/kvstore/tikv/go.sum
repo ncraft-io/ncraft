@@ -349,6 +349,7 @@ github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee h1:W5t00kpgFd
 github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee/go.mod h1:yWuevngMOJpCy52FWWMvUC8ws7m/LJsjYzDa0/r8luk=
 github.com/mojo-lang/mojo/go v0.0.0-20260915054206-2dbac2a196f3 h1:LlOCm44rwJeNvBHd3FNEQG8v+OyreDdm4Evv3gsJXbk=
 github.com/mojo-lang/mojo/go v0.0.0-20260915054206-2dbac2a196f3/go.mod h1:blKKoEl9n/Y5xiMpwAUO3S6CDGvAexB5q3gRXmPcp0I=
+github.com/mojo-lang/mojo/go v0.0.0-20260916062139-c72bd9775f54/go.mod h1:blKKoEl9n/Y5xiMpwAUO3S6CDGvAexB5q3gRXmPcp0I=
 github.com/montanaflynn/stats v0.5.0 h1:2EkzeTSqBB4V4bJwWrt5gIIrZmpJBcoIRGS2kWLgzmk=
 github.com/montanaflynn/stats v0.5.0/go.mod h1:wL8QJuTMNUDYhXwkmfOly8iTdp5TEcJFWZD2D7SIkUc=
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
