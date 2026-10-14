@@ -1,98 +1,131 @@
 package tikv
 
 import (
-    "context"
-    "github.com/ncraft-io/ncraft/go/pkg/ncraft/kvstore"
-    ticonfig "github.com/tikv/client-go/config"
-    "github.com/tikv/client-go/rawkv"
+	"bytes"
+	"context"
+	"github.com/ncraft-io/ncraft/go/pkg/ncraft/kvstore"
+	ticonfig "github.com/tikv/client-go/config"
+	"github.com/tikv/client-go/rawkv"
 )
 
+type rawClient interface {
+	Close() error
+	Get(context.Context, []byte) ([]byte, error)
+	BatchGet(context.Context, [][]byte) ([][]byte, error)
+	Put(context.Context, []byte, []byte, ...rawkv.PutOption) error
+	BatchPut(context.Context, [][]byte, [][]byte, ...rawkv.PutOption) error
+	Delete(context.Context, []byte) error
+	BatchDelete(context.Context, [][]byte) error
+	Scan(context.Context, []byte, []byte, int, ...rawkv.ScanOption) ([][]byte, [][]byte, error)
+	DeleteRange(context.Context, []byte, []byte) error
+}
+
 type Store struct {
-    cli        *rawkv.Client
-    bucketName string
+	cli        rawClient
+	bucketName string
 }
 
 func init() {
-    kvstore.RegisterStore("tikv",
-        func(options kvstore.Options) kvstore.KvStore {
-            o := Options{}
-            err := kvstore.ResetOptions(options, &o)
-            if err != nil {
-                return nil
-            }
+	kvstore.RegisterStore("tikv",
+		func(options kvstore.Options) kvstore.KvStore {
+			o := Options{}
+			err := kvstore.ResetOptions(options, &o)
+			if err != nil {
+				return nil
+			}
 
-            store, err := NewStore(o)
-            if err != nil {
-                return nil
-            }
-            return store
-        })
+			store, err := NewStore(o)
+			if err != nil {
+				return nil
+			}
+			return store
+		})
 }
 
 type Options struct {
-    Pds        []string `json:"pds"`
-    BucketName string   `json:"bucketName"`
+	Pds        []string `json:"pds"`
+	BucketName string   `json:"bucketName"`
 }
 
 func NewStore(conf Options) (kvstore.KvStore, error) {
-    cli, err := rawkv.NewClient(context.TODO(), conf.Pds, ticonfig.Default())
-    if err != nil {
-        return nil, err
-    }
+	cli, err := rawkv.NewClient(context.TODO(), conf.Pds, ticonfig.Default())
+	if err != nil {
+		return nil, err
+	}
 
-    return &Store{
-        cli:        cli,
-        bucketName: conf.BucketName,
-    }, nil
+	return &Store{
+		cli:        cli,
+		bucketName: conf.BucketName,
+	}, nil
 }
 
 func (s *Store) Key(k []byte) []byte {
-    return kvstore.BucketKey(s.bucketName, k)
+	return kvstore.BucketKey(s.bucketName, k)
 }
 
 func (s *Store) Keys(ks [][]byte) [][]byte {
-    keys := make([][]byte, 0, len(ks))
-    for _, key := range ks {
-        keys = append(keys, kvstore.BucketKey(s.bucketName, key))
-    }
-    return keys
+	keys := make([][]byte, 0, len(ks))
+	for _, key := range ks {
+		keys = append(keys, kvstore.BucketKey(s.bucketName, key))
+	}
+	return keys
 }
 
 func (s *Store) Put(ctx context.Context, k []byte, v []byte) error {
-    return s.cli.Put(ctx, s.Key(k), v)
+	return s.cli.Put(ctx, s.Key(k), v)
 }
 
 func (s *Store) BatchPut(ctx context.Context, keys, values [][]byte) error {
-    return s.cli.BatchPut(ctx, s.Keys(keys), values)
+	return s.cli.BatchPut(ctx, s.Keys(keys), values)
 }
 
 func (s *Store) Get(ctx context.Context, k []byte) (v []byte, err error) {
-    return s.cli.Get(ctx, s.Key(k))
+	return s.cli.Get(ctx, s.Key(k))
 }
 
 func (s *Store) BatchGet(ctx context.Context, keys [][]byte) ([][]byte, error) {
-    return s.cli.BatchGet(ctx, s.Keys(keys))
+	return s.cli.BatchGet(ctx, s.Keys(keys))
 }
 
 func (s *Store) Delete(ctx context.Context, k []byte) error {
-    return s.cli.Delete(ctx, s.Key(k))
+	return s.cli.Delete(ctx, s.Key(k))
 }
 
 func (s *Store) BatchDelete(ctx context.Context, keys [][]byte) error {
-    return s.cli.BatchDelete(ctx, s.Keys(keys))
+	return s.cli.BatchDelete(ctx, s.Keys(keys))
+}
+
+// rangeEnd keeps unbounded operations inside the configured bucket.
+func (s *Store) rangeEnd(endKey []byte) []byte {
+	if endKey != nil {
+		return s.Key(endKey)
+	}
+	if s.bucketName == "" {
+		return nil
+	}
+	// Bucket keys start with "bucket."; "bucket/" is the exclusive upper bound.
+	return []byte(s.bucketName + "/")
 }
 
 func (s *Store) Scan(ctx context.Context, startKey, endKey []byte, limit int) (keys [][]byte, values [][]byte, err error) {
-    if endKey == nil {
-        return s.cli.Scan(ctx, s.Key(startKey), nil, limit)
-    }
-    return s.cli.Scan(ctx, s.Key(startKey), s.Key(endKey), limit)
+	if limit <= 0 {
+		return nil, nil, nil
+	}
+	keys, values, err = s.cli.Scan(ctx, s.Key(startKey), s.rangeEnd(endKey), limit)
+	if err != nil {
+		return nil, nil, err
+	}
+	prefix := s.Key(nil)
+	for i, key := range keys {
+		keys[i] = bytes.TrimPrefix(key, prefix)
+	}
+	return keys, values, nil
 }
 
 func (s *Store) DeleteRange(ctx context.Context, startKey []byte, endKey []byte) error {
-    return s.cli.DeleteRange(ctx, s.Key(startKey), s.Key(endKey))
+	return s.cli.DeleteRange(ctx, s.Key(startKey), s.rangeEnd(endKey))
 }
 
 func (s *Store) Close() error {
-    return s.cli.Close()
+	return s.cli.Close()
 }

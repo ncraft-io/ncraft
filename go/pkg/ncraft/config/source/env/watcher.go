@@ -1,24 +1,26 @@
 package env
 
 import (
-    "github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
+	"github.com/ncraft-io/ncraft/go/pkg/ncraft/config/source"
+	"sync"
 )
 
 type watcher struct {
-    exit chan struct{}
+	exit     chan struct{}
+	stopOnce sync.Once
 }
 
 func (w *watcher) Next() (*source.ChangeSet, error) {
-    <-w.exit
+	<-w.exit
 
-    return nil, source.ErrWatcherStopped
+	return nil, source.ErrWatcherStopped
 }
 
 func (w *watcher) Stop() error {
-    close(w.exit)
-    return nil
+	w.stopOnce.Do(func() { close(w.exit) })
+	return nil
 }
 
 func newWatcher() (source.Watcher, error) {
-    return &watcher{exit: make(chan struct{})}, nil
+	return &watcher{exit: make(chan struct{})}, nil
 }

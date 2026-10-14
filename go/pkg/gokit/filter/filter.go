@@ -1,6 +1,7 @@
 package filter
 
 import (
+	"fmt"
 	"github.com/mojo-lang/mojo/go/pkg/compiler/mojo/parser/syntax"
 	"github.com/mojo-lang/mojo/go/pkg/mojo/lang"
 	"gorm.io/gorm/clause"
@@ -18,6 +19,9 @@ func (f Filter) CompileToSql() (clause.Expression, error) {
 }
 
 func (f Filter) compile(expr *lang.Expression) (clause.Expression, error) {
+	if expr == nil {
+		return nil, fmt.Errorf("empty filter expression")
+	}
 	switch expr.Expression.(type) {
 	case *lang.Expression_BinaryExpr:
 		binary := expr.GetBinaryExpr()
@@ -42,7 +46,7 @@ func (f Filter) compile(expr *lang.Expression) (clause.Expression, error) {
 					return clause.Or(left, right), nil
 				}
 			}
-		case "==", ">=", "<=", ">", "<":
+		case "==", "!=", ">=", "<=", ">", "<":
 			filed := &Field{}
 			if err := filed.Parse(binary.LeftArgument); err != nil {
 				return nil, err
@@ -54,6 +58,8 @@ func (f Filter) compile(expr *lang.Expression) (clause.Expression, error) {
 			switch binary.GetOperator().GetSymbol() {
 			case "==":
 				return clause.Eq{Column: filed.Name, Value: value.Val}, nil
+			case "!=":
+				return clause.Neq{Column: filed.Name, Value: value.Val}, nil
 			case ">=":
 				return clause.Gte{Column: filed.Name, Value: value.Val}, nil
 			case "<=":
@@ -78,5 +84,5 @@ func (f Filter) compile(expr *lang.Expression) (clause.Expression, error) {
 	case *lang.Expression_ParenthesizedExpr:
 		return f.compile(expr.GetParenthesizedExpr().Expression)
 	}
-	return nil, nil
+	return nil, fmt.Errorf("unsupported filter expression %T", expr.Expression)
 }

@@ -13,8 +13,10 @@ import (
 )
 
 type config struct {
-	exit chan bool
-	opts Options
+	exit      chan bool
+	closeOnce sync.Once
+	closeErr  error
+	opts      Options
 
 	sync.RWMutex
 	// the current snapshot
@@ -47,6 +49,8 @@ func (c *config) Init(opts ...Option) error {
 		Reader: json.NewReader(),
 	}
 	c.exit = make(chan bool)
+	c.closeOnce = sync.Once{}
+	c.closeErr = nil
 	for _, o := range opts {
 		o(&c.opts)
 	}
@@ -177,13 +181,11 @@ func (c *config) Sync() error {
 }
 
 func (c *config) Close() error {
-	select {
-	case <-c.exit:
-		return nil
-	default:
+	c.closeOnce.Do(func() {
 		close(c.exit)
-	}
-	return nil
+		c.closeErr = c.opts.Loader.Close()
+	})
+	return c.closeErr
 }
 
 func (c *config) Get(path ...string) reader.Value {

@@ -2,9 +2,11 @@ package nats
 
 import (
 	"context"
+	"errors"
 	"regexp"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	jsoniter "github.com/json-iterator/go"
@@ -40,7 +42,7 @@ type Nats struct {
 	conn          *nats.Conn
 	js            nats.JetStreamContext
 	subscriptions map[string]*nats.Subscription
-	shutdown      bool
+	shutdownOnce  sync.Once
 	shutdownCh    chan struct{}
 
 	config     *messaging.Config
@@ -49,6 +51,9 @@ type Nats struct {
 
 // New NewNats creates a new Nats connection
 func New(config *messaging.Config) (*Nats, error) {
+	if config == nil {
+		return nil, errors.New("messaging configuration is required")
+	}
 	if nc, err := nats.Connect(config.ServiceName); err != nil {
 		return nil, err
 	} else {
@@ -57,11 +62,13 @@ func New(config *messaging.Config) (*Nats, error) {
 			id:            "",
 			config:        config,
 			subscriptions: map[string]*nats.Subscription{},
+			shutdownCh:    make(chan struct{}),
 		}
 
 		if config.Nats != nil && len(config.Nats.JetStream) > 0 {
 			js, err := nc.JetStream()
 			if err != nil {
+				nc.Close()
 				return nil, err
 			}
 			n.js = js
@@ -69,7 +76,6 @@ func New(config *messaging.Config) (*Nats, error) {
 				n.SetSubjectNames(n.StreamName() + ".*")
 			}
 			n.createStream(n.StreamName(), n.SubjectNames())
-			n.shutdownCh = make(chan struct{})
 		}
 
 		return n, nil
@@ -170,12 +176,18 @@ func (n *Nats) SubjectNames() []string {
 
 func (n *Nats) AppendSubjectName(name string) {
 	if n != nil && n.config != nil {
+		if n.config.Nats == nil {
+			n.config.Nats = &messaging.Nats{}
+		}
 		n.config.Nats.TopicNames = append(n.config.Nats.TopicNames, name)
 	}
 }
 
 func (n *Nats) SetSubjectNames(names ...string) {
 	if n != nil && n.config != nil {
+		if n.config.Nats == nil {
+			n.config.Nats = &messaging.Nats{}
+		}
 		n.config.Nats.TopicNames = names
 	}
 }
@@ -397,7 +409,15 @@ func (n *Nats) pullSubscribe(opts *messaging.Subscription, cb nats.MsgHandler) (
 
 // Shutdown shuts down all subscribers
 func (n *Nats) Shutdown() {
-	n.conn.Close()
-	close(n.shutdownCh)
-	n.shutdown = true
+	if n == nil {
+		return
+	}
+	n.shutdownOnce.Do(func() {
+		if n.shutdownCh != nil {
+			close(n.shutdownCh)
+		}
+		if n.conn != nil {
+			n.conn.Close()
+		}
+	})
 }

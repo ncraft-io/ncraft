@@ -48,13 +48,17 @@ func (t Token) ValidateTime(expiredDuration *core.Duration) bool {
 	if dt, err := t.GetExpirationTime(); err != nil {
 		return false
 	} else if dt != nil {
-		return now.Before(*dt)
+		if !now.Before(*dt) {
+			return false
+		}
 	}
 
 	if dt, err := t.GetNotBefore(); err != nil {
 		return false
 	} else if dt != nil {
-		return now.After(*dt)
+		if now.Before(*dt) {
+			return false
+		}
 	}
 
 	if dt, err := t.GetIssuedAt(); err != nil {

@@ -65,42 +65,36 @@ func RegisterStore(name string, reader func(Options) KvStore) error {
 
 func NewStore(name string, options Options) KvStore {
 	lock.Lock()
-	defer lock.Unlock()
+	store := stores[name]
+	lock.Unlock()
 
-	if store, ok := stores[name]; ok {
+	if store != nil {
 		return store(options)
 	}
 	return nil
 }
 
 func Scan(kv KvStore, startKey, endKey []byte, valuesChan chan<- *KeysValues, batchLimit int) {
-	if batchLimit == 0 {
+	if batchLimit <= 0 {
 		batchLimit = DefaultBatchSize
 	}
 	for {
 		keys, values, err := kv.Scan(context.TODO(), startKey, endKey, batchLimit)
 		if err != nil {
 			logs.Errorf("failed to scan start from %s, end %s, err: %s", startKey, endKey, err)
-			continue
+			return
 		}
 		keysNum := len(keys)
 		if keysNum == 0 {
 			break
 		}
 
+		valuesChan <- &KeysValues{Keys: keys, Values: values}
 		if keysNum < batchLimit {
-			valuesChan <- &KeysValues{
-				Keys:   keys,
-				Values: values,
-			}
-			break
+			return
 		}
-
-		// avoid to getting duplicated value by minus one
-		startKey = keys[len(keys)-1]
-		valuesChan <- &KeysValues{
-			Keys:   keys[0 : len(keys)-1],
-			Values: values[0 : len(values)-1],
-		}
+		// Scan includes startKey. Appending zero is its immediate lexical successor,
+		// including when keys themselves contain zero bytes.
+		startKey = append(append([]byte(nil), keys[keysNum-1]...), 0)
 	}
 }

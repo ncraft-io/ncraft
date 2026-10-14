@@ -1,232 +1,146 @@
 package goredis
 
 import (
-    "context"
-    "github.com/ncraft-io/ncraft/go/pkg/ncraft/redis"
-    "sync"
-    "testing"
-    "time"
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"net"
+	"testing"
+	"time"
+
+	goRedis "github.com/go-redis/redis/v8"
+	redigo "github.com/gomodule/redigo/redis"
+	"github.com/ncraft-io/ncraft/go/pkg/ncraft/redis"
+	"github.com/stretchr/testify/require"
 )
 
-var redisConnection1 = []string{"localhost:6379"}
-var redisClusterConnections = []string{"localhost:7001", "localhost:7002", "localhost:7003"}
-var invalidRedisConnection = []string{"localhost:7777"}
-
-func TestNewGoRedis(t *testing.T) {
-    var client redis.Redis
-    var err error
-
-    cfg := &redis.Config{}
-    cfg.Connections = redisConnection1 // redis addr
-    client = redis.New(cfg)
-    _, err = client.Do(context.Background(), "ping")
-    if err != nil {
-        t.Fatal("connect failed")
-    }
-
-    cfg.Connections = invalidRedisConnection // invalid redis addr
-    client = redis.New(cfg)
-    _, err = client.Do(context.Background(), "ping")
-    if err == nil {
-        t.Fatal("expect connect failed but not")
-    }
-
-    //cfg.Connections = redisClusterConnections // redis cluster addresses
-    //client = redis.New(cfg)
-    //_, err = client.Do(context.Background(), "ping")
-    //if err != nil {
-    //    t.Fatal("connect failed")
-    //}
+type scriptStep struct {
+	commands [][]string
+	reply    string
 }
 
-type command struct {
-    cmd  string
-    args []interface{}
+// Use the real Redis wire protocol over an in-memory connection. No local Redis
+// server, fixed ports, or sleeps are needed.
+func scriptedClient(t *testing.T, steps ...scriptStep) *Redis {
+	t.Helper()
+	clientConn, serverConn := net.Pipe()
+	done := make(chan error, 1)
+	go func() {
+		defer serverConn.Close()
+		decoder := redigo.NewConn(serverConn, time.Second, time.Second)
+		for _, step := range steps {
+			for _, want := range step.commands {
+				got, err := redigo.Strings(decoder.Receive())
+				if err != nil {
+					done <- err
+					return
+				}
+				if fmt.Sprint(got) != fmt.Sprint(want) {
+					done <- fmt.Errorf("command = %v, want %v", got, want)
+					return
+				}
+			}
+			if _, err := io.WriteString(serverConn, step.reply); err != nil {
+				done <- err
+				return
+			}
+		}
+		done <- nil
+	}()
+	c := &Redis{Client: goRedis.NewClient(&goRedis.Options{
+		Dialer:     func(context.Context, string, string) (net.Conn, error) { return clientConn, nil },
+		MaxRetries: -1, PoolSize: 1,
+	})}
+	t.Cleanup(func() {
+		require.NoError(t, c.Close())
+		_ = serverConn.Close()
+		require.NoError(t, <-done)
+	})
+	return c
 }
 
-func TestRunBatch(t *testing.T) {
-    var key = "test_key"
-    var field1, field2, field3 = "field1", "field2", "field3"
-    var value1, value2, value3, value22 = "value1", "value2", "value3", "value22"
-    var err error
-    var rets []interface{}
-    var strs []string
-    var strsExpect = []string{"", value22}
-    var n int
-    var nExpect = 2
-    var m map[string]string
-    var mExpect = map[string]string{field2: value22, field3: value3}
-
-    cmds := []*command{
-        {
-            cmd:  "del",
-            args: []interface{}{key},
-        },
-        {
-            cmd:  "hmset",
-            args: []interface{}{key, field1, value1, field2, value2},
-        },
-        {
-            cmd:  "hdel",
-            args: []interface{}{key, field1},
-        },
-        {
-            cmd:  "hmset",
-            args: []interface{}{key, field2, value22, field3, value3},
-        },
-        {
-            cmd:  "hmget",
-            args: []interface{}{key, field1, field2},
-        },
-        {
-            cmd:  "hlen",
-            args: []interface{}{key},
-        },
-        {
-            cmd:  "hgetall",
-            args: []interface{}{key},
-        },
-    }
-
-    client := redis.New(&redis.Config{Connections: redisConnection1})
-    batch := client.NewBatch()
-    for _, cmd := range cmds {
-        if err = batch.Put(cmd.cmd, cmd.args...); err != nil {
-            t.Fatal(err)
-        }
-    }
-
-    if rets, err = client.RunBatch(context.Background(), batch); err != nil {
-        t.Fatal(err)
-    }
-
-    if len(rets) != len(cmds) {
-        t.Fatal("length not equal")
-    }
-
-    if strs, err = redis.Strings(rets[4], nil); err != nil {
-        t.Fatal(err)
-    }
-    for idx := range strs {
-        if strs[idx] != strsExpect[idx] {
-            t.Fatal("value not equal")
-        }
-    }
-
-    if n, err = redis.Int(rets[5], nil); err != nil {
-        t.Fatal(err)
-    }
-    if n != nExpect {
-        t.Fatal("value not equal")
-    }
-
-    if m, err = redis.StringMap(rets[6], nil); err != nil {
-        t.Fatal(err)
-    }
-    if len(m) != len(mExpect) {
-        t.Fatal("length not equal")
-    }
-    for key := range m {
-        if m[key] != mExpect[key] {
-            t.Fatal("value not equal")
-        }
-    }
+func TestDoAndStats(t *testing.T) {
+	c := scriptedClient(t,
+		scriptStep{[][]string{{"SET", "key", "value"}}, "+OK\r\n"},
+		scriptStep{[][]string{{"GET", "key"}}, "$5\r\nvalue\r\n"},
+		scriptStep{[][]string{{"GET", "missing"}}, "$-1\r\n"},
+	)
+	got, err := c.Do(context.Background(), "SET", "key", "value")
+	require.NoError(t, err)
+	require.Equal(t, "OK", got)
+	got, err = c.Do(context.Background(), "GET", "key")
+	require.NoError(t, err)
+	require.Equal(t, "value", got)
+	_, err = c.Do(context.Background(), "GET", "missing")
+	require.ErrorIs(t, err, goRedis.Nil)
+	require.GreaterOrEqual(t, c.Stats().Hits, int64(1))
 }
 
-func TestStats(t *testing.T) {
-    minIdle := 100
-    maxActive := 300
-    cfg := redis.Config{
-        Connections:          redisConnection1,
-        MinIdleConnections:   minIdle,
-        MaxActiveConnections: maxActive,
-    }
-    client := redis.New(&cfg)
-
-    time.Sleep(time.Second)
-    stats := client.Stats()
-
-    if stats.IdleCount != int64(minIdle) {
-        t.Fatal("idle connection number wrong, expect ", minIdle, ", got ", stats.IdleCount)
-    }
-
-    if stats.TotalCount != int64(minIdle) {
-        t.Fatal("total connection number wrong, expect ", minIdle, ", got ", stats.TotalCount)
-    }
+func TestBatchReuseAndErrors(t *testing.T) {
+	c := scriptedClient(t,
+		scriptStep{[][]string{{"PING"}, {"GET", "key"}}, "+PONG\r\n$5\r\nvalue\r\n"},
+		scriptStep{[][]string{{"INCR", "count"}}, ":1\r\n"},
+		scriptStep{[][]string{{"GET", "missing"}, {"PING"}}, "$-1\r\n+PONG\r\n"},
+	)
+	batch := c.NewBatch()
+	require.NoError(t, batch.Put("PING"))
+	require.NoError(t, batch.Put("GET", "key"))
+	replies, err := c.RunBatch(context.Background(), batch)
+	require.NoError(t, err)
+	require.Equal(t, []any{"PONG", "value"}, replies)
+	require.NoError(t, batch.Put("INCR", "count"))
+	replies, err = c.RunBatch(context.Background(), batch)
+	require.NoError(t, err)
+	require.Equal(t, []any{int64(1)}, replies)
+	require.NoError(t, batch.Put("GET", "missing"))
+	require.NoError(t, batch.Put("PING"))
+	replies, err = c.RunBatch(context.Background(), batch)
+	require.ErrorIs(t, err, goRedis.Nil)
+	require.Equal(t, []any{nil, "PONG"}, replies)
 }
 
-func TestConfig_Default(t *testing.T) {
-    minIdle := 100
-    cfg := redis.Config{
-        Connections: redisConnection1,
-    }
-    client := redis.New(&cfg)
+type foreignBatch struct{}
 
-    time.Sleep(time.Second)
-    stats := client.Stats()
+func (foreignBatch) Put(string, ...any) error { return nil }
 
-    if stats.IdleCount != int64(minIdle) {
-        t.Fatal("idle connection number wrong, expect ", minIdle, ", got ", stats.IdleCount)
-    }
-
-    if stats.TotalCount != int64(minIdle) {
-        t.Fatal("total connection number wrong, expect ", minIdle, ", got ", stats.TotalCount)
-    }
+func TestInvalidBatchAndCancelledRequest(t *testing.T) {
+	client := goRedis.NewClient(&goRedis.Options{Dialer: func(ctx context.Context, _, _ string) (net.Conn, error) { return nil, ctx.Err() }, MaxRetries: -1})
+	c := &Redis{Client: client}
+	defer c.Close()
+	for _, batch := range []redis.Batch{nil, foreignBatch{}, (*pipeline)(nil), &pipeline{}} {
+		require.NotPanics(t, func() {
+			_, err := c.RunBatch(context.Background(), batch)
+			require.Error(t, err)
+		})
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	_, err := c.Do(ctx, "PING")
+	require.ErrorIs(t, err, context.Canceled)
 }
 
-func TestConfig_IdleTimeout(t *testing.T) {
-    var stats *redis.Stats
-    minIdle := 10
-    maxConn := 20
-    concurrency := 30
-    idleTimeout := 1 * time.Second
-    cfg := redis.Config{
-        Connections:          redisConnection1,
-        MinIdleConnections:   minIdle,
-        IdleCheckFrequency:   time.Second,
-        MaxActiveConnections: maxConn,
-        IdleTimeout:          idleTimeout,
-    }
-    client := redis.New(&cfg)
+func TestNewRedisOptions(t *testing.T) {
+	cfg := &redis.Config{Connections: []string{"unused:6379"}, MinIdleConnections: -1, Password: "secret", DbNumber: 2, IdleTimeout: time.Minute}
+	c := NewRedis(cfg).(*Redis)
+	defer c.Close()
+	opts := c.Client.(*goRedis.Client).Options()
+	require.Equal(t, "unused:6379", opts.Addr)
+	require.Equal(t, "secret", opts.Password)
+	require.Equal(t, 2, opts.DB)
+	require.Equal(t, 300, opts.PoolSize)
+	require.Equal(t, time.Second, opts.ReadTimeout)
+	require.Equal(t, time.Minute, opts.IdleTimeout)
+	cluster := NewRedis(&redis.Config{Connections: []string{"one:6379", "two:6379"}, MinIdleConnections: -1}).(*Redis)
+	defer cluster.Close()
+	require.Equal(t, []string{"one:6379", "two:6379"}, cluster.Client.(*goRedis.ClusterClient).Options().Addrs)
+}
 
-    // stats at start
-    time.Sleep(time.Second / 2)
-    stats = client.Stats()
-    if stats.IdleCount != int64(minIdle) {
-        t.Fatal("idle connection number wrong, expect ", minIdle, ", got ", stats.IdleCount)
-    }
-    if stats.TotalCount != int64(minIdle) {
-        t.Fatal("total connection number wrong, expect ", minIdle, ", got ", stats.TotalCount)
-    }
-
-    // stats after concurrent op
-    wg := sync.WaitGroup{}
-    wg.Add(concurrency)
-    for i := 0; i < concurrency; i++ {
-        go func() {
-            batch := client.NewBatch()
-            _ = batch.Put("dbsize")
-            _, _ = client.RunBatch(context.Background(), batch)
-            wg.Done()
-        }()
-    }
-    wg.Wait()
-
-    stats = client.Stats()
-    if stats.IdleCount != int64(maxConn) {
-        t.Fatal("idle connection number wrong, expect ", maxConn, ", got ", stats.IdleCount)
-    }
-    if stats.TotalCount != int64(maxConn) {
-        t.Fatal("total connection number wrong, expect ", maxConn, ", got ", stats.TotalCount)
-    }
-
-    // stats after idleTime exceed
-    time.Sleep(idleTimeout * 2)
-    stats = client.Stats()
-    if stats.IdleCount != int64(minIdle) {
-        t.Fatal("idle connection number wrong, expect ", minIdle, ", got ", stats.IdleCount)
-    }
-    if stats.TotalCount != int64(minIdle) {
-        t.Fatal("total connection number wrong, expect ", minIdle, ", got ", stats.TotalCount)
-    }
+func TestDoPropagatesConnectionError(t *testing.T) {
+	expected := errors.New("dial failed")
+	client := goRedis.NewClient(&goRedis.Options{Dialer: func(context.Context, string, string) (net.Conn, error) { return nil, expected }, MaxRetries: -1})
+	c := &Redis{Client: client}
+	defer c.Close()
+	_, err := c.Do(context.Background(), "PING")
+	require.ErrorIs(t, err, expected)
 }

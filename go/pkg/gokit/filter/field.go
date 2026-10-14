@@ -1,6 +1,9 @@
 package filter
 
-import "github.com/mojo-lang/mojo/go/pkg/mojo/lang"
+import (
+	"fmt"
+	"github.com/mojo-lang/mojo/go/pkg/mojo/lang"
+)
 
 type Field struct {
 	Name string
@@ -8,6 +11,9 @@ type Field struct {
 }
 
 func (f *Field) Parse(expr *lang.Expression) error {
+	if expr == nil {
+		return fmt.Errorf("missing filter field")
+	}
 	switch expr.Expression.(type) {
 	case *lang.Expression_StringLiteralExpr:
 		f.Name = expr.GetStringLiteralExpr().GetValue()
@@ -15,6 +21,11 @@ func (f *Field) Parse(expr *lang.Expression) error {
 		f.Name = expr.GetIdentifierExpr().GetName()
 	case *lang.Expression_ExplicitMemberExpr:
 		f.Name = expr.GetExplicitMemberExpr().Member
+	default:
+		return fmt.Errorf("unsupported filter field %T", expr.Expression)
+	}
+	if f.Name == "" {
+		return fmt.Errorf("empty filter field")
 	}
 	return nil
 }
@@ -24,6 +35,9 @@ type Value struct {
 }
 
 func (v *Value) Parse(expr *lang.Expression) error {
+	if expr == nil {
+		return fmt.Errorf("missing filter value")
+	}
 	switch expr.Expression.(type) {
 	case *lang.Expression_IdentifierExpr:
 		v.Val = expr.GetIdentifierExpr().GetName()
@@ -35,6 +49,8 @@ func (v *Value) Parse(expr *lang.Expression) error {
 		v.Val = expr.GetIntegerLiteralExpr().EvalValue()
 	case *lang.Expression_BoolLiteralExpr:
 		v.Val = expr.GetBoolLiteralExpr().EvalValue()
+	default:
+		return fmt.Errorf("unsupported filter value %T", expr.Expression)
 	}
 	return nil
 }

@@ -53,14 +53,18 @@ func (j *JWT) Generate(token Token) (string, error) {
 }
 
 func (j *JWT) Parse(token string) (Token, error) {
+	options := []jwt.ParserOption{jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()})}
+	if j.Config != nil && j.Config.IgnoreTime {
+		options = append(options, jwt.WithoutClaimsValidation())
+	}
 	tk, err := jwt.Parse(token, func(t *jwt.Token) (any, error) {
 		return j.Key, nil
-	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
+	}, options...)
 	if err != nil {
 		return nil, err
 	}
 	if tk == nil || !tk.Valid {
-		return nil, fmt.Errorf("the token (%s) is invalid", tk.Raw)
+		return nil, fmt.Errorf("the token is invalid")
 	}
 
 	return Token(tk.Claims.(jwt.MapClaims)), nil
